@@ -85,6 +85,7 @@ export const templateConfig = {
                         {
                             mermaidId: 'ln-project-architecture',
                             title: 'L_N_Project (Life Navigation)',
+                            youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: '개인 프로젝트 · 2025.04 - 현재',
                             overview: '실패한 TODO 원인을 분석하고 다음 실행 계획으로 재구성하는 서비스입니다.',
                             role: 'BE/FE/DevOps 전 영역 설계, 구현, 운영 자동화',

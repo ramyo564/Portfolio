@@ -373,6 +373,7 @@ body.modal-open {
 }
 
 .card-visual {
+    position: relative;
     height: var(--card-visual-height, 250px);
     border-bottom: 1px solid var(--border-color);
     background: rgba(0, 0, 0, 0.2);
@@ -380,6 +381,7 @@ body.modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .card-content {
@@ -583,6 +585,44 @@ body.modal-open {
     outline-offset: 2px;
 }
 
+.youtube-hover-preview {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: rgba(5, 8, 12, 0.78);
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.mermaid-zoom-target.has-youtube-preview:hover .youtube-hover-preview,
+.mermaid-zoom-target.has-youtube-preview:focus-visible .youtube-hover-preview {
+    opacity: 1;
+}
+
+.youtube-hover-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.youtube-hover-hint {
+    position: absolute;
+    left: 0.65rem;
+    bottom: 0.65rem;
+    font-family: var(--font-code);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: #d5e6ff;
+    border: 1px solid rgba(88, 166, 255, 0.55);
+    border-radius: 4px;
+    background: rgba(7, 14, 22, 0.8);
+    padding: 0.28rem 0.45rem;
+}
+
 .mermaid-modal {
     position: fixed;
     inset: 0;
@@ -687,9 +727,86 @@ body.modal-open {
 .mermaid-modal-content {
     flex: 1;
     overflow: auto;
-    background: rgba(0, 0, 0, 0.18);
+    background:
+        radial-gradient(circle at top right, rgba(88, 166, 255, 0.08), transparent 36%),
+        rgba(0, 0, 0, 0.18);
     padding: 3rem 1rem 1rem;
     display: block;
+}
+
+.mermaid-modal-layout {
+    width: 100%;
+    min-width: 0;
+    max-width: 1520px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.mermaid-modal-content.has-linked-video .mermaid-modal-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+}
+
+.mermaid-modal-panel {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(8, 12, 18, 0.72);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.02),
+        0 8px 24px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    min-width: 0;
+}
+
+.mermaid-modal-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.52rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(88, 166, 255, 0.08);
+    color: var(--accent-blue);
+    font-family: var(--font-code);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+}
+
+.mermaid-modal-panel-header span:last-child {
+    color: var(--text-secondary);
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
+}
+
+.mermaid-modal-panel-body {
+    padding: 0.75rem;
+}
+
+.mermaid-modal-panel-diagram {
+    width: 100%;
+    justify-self: stretch;
+}
+
+.mermaid-modal-content.has-linked-video .mermaid-modal-panel-diagram {
+    justify-self: stretch;
+}
+
+.mermaid-modal-panel-body-diagram {
+    padding: 0;
+}
+
+.mermaid-modal-diagram-pane {
+    width: 100%;
+}
+
+.mermaid-modal-diagram-viewport {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(68vh, 760px);
+    overflow: auto;
+    padding: 0.75rem;
 }
 
 .mermaid-modal-canvas {
@@ -704,13 +821,41 @@ body.modal-open {
     min-width: 0;
 }
 
-.mermaid-modal-content.can-pan {
+.mermaid-modal-diagram-viewport.can-pan {
     cursor: grab;
     user-select: none;
 }
 
-.mermaid-modal-content.is-panning {
+.mermaid-modal-diagram-viewport.is-panning {
     cursor: grabbing;
+}
+
+.mermaid-modal-panel-video {
+    position: sticky;
+    top: 0;
+    align-self: start;
+}
+
+.mermaid-modal-video-pane {
+    width: 100%;
+}
+
+.mermaid-modal-panel-body-video {
+    padding: 0.75rem;
+}
+
+.mermaid-modal-video-wrap {
+    border: 1px solid rgba(88, 166, 255, 0.28);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+}
+
+.mermaid-modal-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    display: block;
 }
 
 @media (max-width: 1200px) {
@@ -732,6 +877,22 @@ body.modal-open {
 
     .skill-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mermaid-modal-content.has-linked-video .mermaid-modal-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mermaid-modal-panel-diagram {
+        width: 100%;
+        max-width: none;
+    }
+
+    .mermaid-modal-panel-video {
+        position: static;
+        width: 100%;
+        max-width: 680px;
+        justify-self: center;
     }
 }
 
@@ -840,6 +1001,15 @@ body.modal-open {
         min-width: 0;
     }
 
+    .mermaid-modal-layout {
+        gap: 0.7rem;
+    }
+
+    .mermaid-modal-diagram-viewport {
+        max-height: min(52vh, 560px);
+        padding: 0.58rem;
+    }
+
     .mermaid-modal-controls {
         top: 2.75rem;
         left: 0.45rem;
@@ -856,5 +1026,27 @@ body.modal-open {
         min-width: 48px;
         font-size: 0.66rem;
         padding: 0.22rem 0.35rem;
+    }
+
+    .mermaid-modal-panel-header {
+        padding: 0.46rem 0.58rem;
+        font-size: 0.62rem;
+    }
+
+    .mermaid-modal-panel-header span:last-child {
+        font-size: 0.58rem;
+    }
+
+    .mermaid-modal-panel-body {
+        padding: 0.58rem;
+    }
+
+    .mermaid-modal-panel-video {
+        width: 100%;
+        max-width: none;
+    }
+
+    .youtube-hover-hint {
+        font-size: 0.62rem;
     }
 }

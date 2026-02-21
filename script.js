@@ -39,6 +39,107 @@ function toSafeLabel(value) {
     return String(value ?? 'unknown').replace(/[^a-zA-Z0-9_-]+/g, ' ').trim() || 'unknown';
 }
 
+function extractYouTubeVideoId(urlOrId) {
+    const rawValue = String(urlOrId ?? '').trim();
+    if (!rawValue) {
+        return '';
+    }
+
+    const videoIdPattern = /^[a-zA-Z0-9_-]{11}$/;
+    if (videoIdPattern.test(rawValue)) {
+        return rawValue;
+    }
+
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(rawValue);
+    } catch {
+        return '';
+    }
+
+    const host = parsedUrl.hostname.toLowerCase();
+    if (host === 'youtu.be') {
+        const shortId = parsedUrl.pathname.split('/').filter(Boolean)[0] ?? '';
+        return videoIdPattern.test(shortId) ? shortId : '';
+    }
+
+    if (host.includes('youtube.com') || host.includes('youtube-nocookie.com')) {
+        const watchId = parsedUrl.searchParams.get('v') ?? '';
+        if (videoIdPattern.test(watchId)) {
+            return watchId;
+        }
+
+        const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
+        const knownMarkers = ['embed', 'shorts', 'live', 'v'];
+        const markerIndex = pathSegments.findIndex((segment) => knownMarkers.includes(segment));
+        if (markerIndex >= 0) {
+            const candidate = pathSegments[markerIndex + 1] ?? '';
+            if (videoIdPattern.test(candidate)) {
+                return candidate;
+            }
+        }
+
+        const lastSegment = pathSegments[pathSegments.length - 1] ?? '';
+        if (videoIdPattern.test(lastSegment)) {
+            return lastSegment;
+        }
+    }
+
+    return '';
+}
+
+function resolveYouTubeVideoId(source) {
+    if (!source || typeof source !== 'object') {
+        return '';
+    }
+
+    const candidates = [];
+    if (source.youtubeId) {
+        candidates.push(source.youtubeId);
+    }
+    if (source.youtubeUrl) {
+        candidates.push(source.youtubeUrl);
+    }
+
+    const links = Array.isArray(source.links) ? source.links : [];
+    links.forEach((item) => {
+        if (item?.href) {
+            candidates.push(item.href);
+        }
+    });
+
+    for (let index = 0; index < candidates.length; index += 1) {
+        const videoId = extractYouTubeVideoId(candidates[index]);
+        if (videoId) {
+            return videoId;
+        }
+    }
+
+    return '';
+}
+
+function setYouTubeDataAttribute(target, source) {
+    if (!(target instanceof HTMLElement)) {
+        return;
+    }
+    const videoId = resolveYouTubeVideoId(source);
+    if (videoId) {
+        target.setAttribute('data-youtube-video-id', videoId);
+        return;
+    }
+    target.removeAttribute('data-youtube-video-id');
+}
+
+function buildYouTubeEmbedUrl(videoId, options = {}) {
+    const autoplay = options.autoplay ? '1' : '0';
+    const mute = options.mute ? '1' : '0';
+    const controls = options.controls === false ? '0' : '1';
+    const loop = options.loop ? '1' : '0';
+    const playlist = loop === '1' ? `&playlist=${encodeURIComponent(videoId)}` : '';
+
+    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=${autoplay}&mute=${mute}&controls=${controls}&rel=0&modestbranding=1&playsinline=1&loop=${loop}${playlist}`;
+}
+
 function setText(id, value) {
     const el = byId(id);
     if (el && value) {
@@ -139,6 +240,7 @@ function renderHero() {
     const section = byId('system-architecture');
     const metrics = byId('hero-metrics');
     const mermaidContainer = byId('hero-mermaid');
+    const graphContainer = mermaidContainer?.closest('.graph-container') ?? null;
 
     if (section && hero.sectionId) {
         section.id = hero.sectionId;
@@ -149,6 +251,7 @@ function renderHero() {
     if (mermaidContainer && hero.diagramId) {
         mermaidContainer.setAttribute('data-mermaid-id', hero.diagramId);
     }
+    setYouTubeDataAttribute(graphContainer, hero);
 
     if (!metrics) {
         return;
@@ -198,6 +301,7 @@ function createTopPanel(panel, index) {
     mermaidContainer.className = 'mermaid';
     mermaidContainer.setAttribute('data-mermaid-id', panel.diagramId || '');
     graphContainer.appendChild(mermaidContainer);
+    setYouTubeDataAttribute(graphContainer, panel);
 
     const metrics = document.createElement('div');
     metrics.className = 'hero-message';
@@ -386,6 +490,7 @@ function createServiceCard(card, sectionConfig) {
     mermaidContainer.className = 'mermaid';
     mermaidContainer.setAttribute('data-mermaid-id', card.mermaidId ?? '');
     visual.appendChild(mermaidContainer);
+    setYouTubeDataAttribute(visual, card);
 
     const content = document.createElement('div');
     content.className = 'card-content';
@@ -727,6 +832,7 @@ function setupMermaidModal() {
     let zoom = 1;
     let activeSvg = null;
     let activeCanvas = null;
+    let activeViewport = null;
     let baseSvgWidth = 0;
     let baseSvgHeight = 0;
     let isPanning = false;
@@ -751,12 +857,12 @@ function setupMermaidModal() {
     const zoomValue = controls.querySelector('.mermaid-zoom-value');
 
     const centerModalView = () => {
-        const maxLeft = modalContent.scrollWidth - modalContent.clientWidth;
-        if (maxLeft > 0) {
-            modalContent.scrollLeft = Math.floor(maxLeft / 2);
+        if (!(activeViewport instanceof HTMLElement)) {
             return;
         }
-        modalContent.scrollLeft = 0;
+
+        const maxLeft = activeViewport.scrollWidth - activeViewport.clientWidth;
+        activeViewport.scrollLeft = maxLeft > 0 ? Math.floor(maxLeft / 2) : 0;
     };
 
     const scheduleCenterModalView = () => {
@@ -771,11 +877,13 @@ function setupMermaidModal() {
             return;
         }
         isPanning = false;
-        modalContent.classList.remove('is-panning');
+        if (activeViewport) {
+            activeViewport.classList.remove('is-panning');
+        }
     };
 
     const applyZoom = () => {
-        if (!activeSvg || !activeCanvas) {
+        if (!activeSvg || !activeCanvas || !activeViewport) {
             return;
         }
 
@@ -790,10 +898,10 @@ function setupMermaidModal() {
         activeSvg.setAttribute('height', String(baseSvgHeight));
 
         if (zoom > 1.001) {
-            modalContent.classList.add('can-pan');
+            activeViewport.classList.add('can-pan');
         } else {
             endPan();
-            modalContent.classList.remove('can-pan');
+            activeViewport.classList.remove('can-pan');
         }
 
         if (zoomValue) {
@@ -815,9 +923,13 @@ function setupMermaidModal() {
         modal.setAttribute('aria-hidden', 'true');
         modalContent.replaceChildren();
         endPan();
-        modalContent.classList.remove('can-pan');
+        modalContent.classList.remove('has-linked-video');
+        if (activeViewport) {
+            activeViewport.classList.remove('can-pan');
+        }
         activeSvg = null;
         activeCanvas = null;
+        activeViewport = null;
         baseSvgWidth = 0;
         baseSvgHeight = 0;
         zoom = 1;
@@ -827,11 +939,59 @@ function setupMermaidModal() {
         document.body.classList.remove('modal-open');
     };
 
+    const setupHoverPreview = (target, videoId) => {
+        if (!videoId || target.querySelector('.youtube-hover-preview')) {
+            return;
+        }
+
+        target.classList.add('has-youtube-preview');
+
+        const preview = document.createElement('div');
+        preview.className = 'youtube-hover-preview';
+        preview.setAttribute('aria-hidden', 'true');
+
+        const iframe = document.createElement('iframe');
+        iframe.className = 'youtube-hover-frame';
+        iframe.title = 'Linked YouTube Preview';
+        iframe.loading = 'lazy';
+        iframe.tabIndex = -1;
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.setAttribute('allowfullscreen', '');
+        preview.appendChild(iframe);
+
+        const hint = document.createElement('span');
+        hint.className = 'youtube-hover-hint';
+        hint.textContent = 'HOVER PREVIEW · CLICK PLAY';
+        preview.appendChild(hint);
+
+        target.appendChild(preview);
+
+        let previewLoaded = false;
+        const ensurePreviewLoaded = () => {
+            if (previewLoaded) {
+                return;
+            }
+            iframe.src = buildYouTubeEmbedUrl(videoId, {
+                autoplay: true,
+                mute: true,
+                controls: false,
+                loop: true
+            });
+            previewLoaded = true;
+        };
+
+        target.addEventListener('mouseenter', ensurePreviewLoaded);
+        target.addEventListener('focusin', ensurePreviewLoaded);
+        target.addEventListener('touchstart', ensurePreviewLoaded, { passive: true, once: true });
+    };
+
     const openModal = (target) => {
         const sourceSvg = target.querySelector('.mermaid svg');
         if (!sourceSvg) {
             return;
         }
+        const videoId = target.getAttribute('data-youtube-video-id') || '';
 
         const clonedSvg = sourceSvg.cloneNode(true);
         clonedSvg.style.maxWidth = 'none';
@@ -869,11 +1029,66 @@ function setupMermaidModal() {
         canvas.style.height = `${baseSvgHeight}px`;
         canvas.appendChild(clonedSvg);
 
-        modalContent.replaceChildren(canvas);
+        const layout = document.createElement('div');
+        layout.className = 'mermaid-modal-layout';
+
+        const diagramPane = document.createElement('section');
+        diagramPane.className = 'mermaid-modal-panel mermaid-modal-panel-diagram mermaid-modal-diagram-pane';
+        const diagramHeader = document.createElement('div');
+        diagramHeader.className = 'mermaid-modal-panel-header';
+        diagramHeader.innerHTML = '<span>DIAGRAM</span><span>CTRL/CMD + WHEEL TO ZOOM</span>';
+
+        const diagramBody = document.createElement('div');
+        diagramBody.className = 'mermaid-modal-panel-body mermaid-modal-panel-body-diagram';
+        const diagramViewport = document.createElement('div');
+        diagramViewport.className = 'mermaid-modal-diagram-viewport';
+        diagramViewport.appendChild(canvas);
+        diagramBody.appendChild(diagramViewport);
+
+        diagramPane.append(diagramHeader, diagramBody);
+        layout.appendChild(diagramPane);
+
+        if (videoId) {
+            const videoPane = document.createElement('section');
+            videoPane.className = 'mermaid-modal-panel mermaid-modal-panel-video mermaid-modal-video-pane';
+            const videoHeader = document.createElement('div');
+            videoHeader.className = 'mermaid-modal-panel-header';
+            videoHeader.innerHTML = '<span>YOUTUBE</span><span>LINKED PLAYBACK</span>';
+
+            const videoBody = document.createElement('div');
+            videoBody.className = 'mermaid-modal-panel-body mermaid-modal-panel-body-video';
+            const videoWrap = document.createElement('div');
+            videoWrap.className = 'mermaid-modal-video-wrap';
+
+            const videoFrame = document.createElement('iframe');
+            videoFrame.className = 'mermaid-modal-video';
+            videoFrame.title = 'Linked YouTube Video';
+            videoFrame.loading = 'eager';
+            videoFrame.referrerPolicy = 'strict-origin-when-cross-origin';
+            videoFrame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            videoFrame.setAttribute('allowfullscreen', '');
+            videoFrame.src = buildYouTubeEmbedUrl(videoId, {
+                autoplay: true,
+                mute: false,
+                controls: true,
+                loop: false
+            });
+
+            videoWrap.appendChild(videoFrame);
+            videoBody.appendChild(videoWrap);
+            videoPane.append(videoHeader, videoBody);
+            layout.appendChild(videoPane);
+            modalContent.classList.add('has-linked-video');
+        } else {
+            modalContent.classList.remove('has-linked-video');
+        }
+
+        modalContent.replaceChildren(layout);
         modalContent.scrollLeft = 0;
         modalContent.scrollTop = 0;
         activeCanvas = canvas;
         activeSvg = clonedSvg;
+        activeViewport = diagramViewport;
         zoom = 1;
         applyZoom();
 
@@ -915,7 +1130,11 @@ function setupMermaidModal() {
     });
 
     modalContent.addEventListener('wheel', (event) => {
-        if (!modal.classList.contains('is-open') || !activeSvg || !event.ctrlKey) {
+        if (!modal.classList.contains('is-open') || !activeSvg || !activeViewport || !event.ctrlKey) {
+            return;
+        }
+        const eventTarget = event.target;
+        if (!(eventTarget instanceof Node) || !activeViewport.contains(eventTarget)) {
             return;
         }
         event.preventDefault();
@@ -927,29 +1146,36 @@ function setupMermaidModal() {
     }, { passive: false });
 
     modalContent.addEventListener('pointerdown', (event) => {
-        if (!modal.classList.contains('is-open') || !activeSvg || zoom <= 1.001) {
+        if (!modal.classList.contains('is-open') || !activeSvg || !activeViewport || zoom <= 1.001) {
             return;
         }
         if (event.button !== 0) {
             return;
         }
+        const eventTarget = event.target;
+        if (!(eventTarget instanceof Element)) {
+            return;
+        }
+        if (!activeViewport.contains(eventTarget)) {
+            return;
+        }
         isPanning = true;
         panStartX = event.clientX;
         panStartY = event.clientY;
-        panStartScrollLeft = modalContent.scrollLeft;
-        panStartScrollTop = modalContent.scrollTop;
-        modalContent.classList.add('is-panning');
+        panStartScrollLeft = activeViewport.scrollLeft;
+        panStartScrollTop = activeViewport.scrollTop;
+        activeViewport.classList.add('is-panning');
         event.preventDefault();
     });
 
     modalContent.addEventListener('pointermove', (event) => {
-        if (!isPanning) {
+        if (!isPanning || !activeViewport) {
             return;
         }
         const deltaX = event.clientX - panStartX;
         const deltaY = event.clientY - panStartY;
-        modalContent.scrollLeft = panStartScrollLeft - deltaX;
-        modalContent.scrollTop = panStartScrollTop - deltaY;
+        activeViewport.scrollLeft = panStartScrollLeft - deltaX;
+        activeViewport.scrollTop = panStartScrollTop - deltaY;
         event.preventDefault();
     });
 
@@ -965,7 +1191,13 @@ function setupMermaidModal() {
         target.classList.add('mermaid-zoom-target');
         target.setAttribute('tabindex', '0');
         target.setAttribute('role', 'button');
-        target.setAttribute('aria-label', 'Open expanded Mermaid diagram');
+        const videoId = target.getAttribute('data-youtube-video-id') || '';
+        if (videoId) {
+            target.setAttribute('aria-label', 'Open expanded Mermaid diagram and play linked YouTube video');
+            setupHoverPreview(target, videoId);
+        } else {
+            target.setAttribute('aria-label', 'Open expanded Mermaid diagram');
+        }
 
         target.addEventListener('click', () => openModal(target));
         target.addEventListener('keydown', (event) => {
