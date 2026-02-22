@@ -162,28 +162,77 @@ body.modal-open {
     gap: 3rem;
 }
 
-#about {
+#about,
+#hub-overview {
     display: grid;
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
     gap: 1rem;
     align-items: stretch;
 }
 
-#about .panel-header {
+#about .panel-header,
+#hub-overview .panel-header {
     grid-column: 1 / -1;
     margin-bottom: 0;
 }
 
 #about .graph-container {
+    grid-column: 1;
+    grid-row: 2;
     height: clamp(320px, 34vw, 430px);
 }
 
 #about .hero-message {
+    grid-column: 2;
+    grid-row: 2;
     height: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+#hub-overview .hero-visual-stack {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 0.8rem;
+}
+
+#hub-overview .graph-container {
+    height: clamp(280px, 27vw, 360px);
+}
+
+#hub-overview .hero-message {
+    grid-column: 2;
+    grid-row: 2;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#hub-overview .hero-diagram-notes {
+    list-style: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.72rem 0.85rem;
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--text-secondary);
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 0.26rem;
+}
+
+#hub-overview .hero-diagram-notes li::before {
+    content: "> ";
+    color: var(--accent-green);
 }
 
 .panel {
@@ -306,7 +355,7 @@ body.modal-open {
 
 .service-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.2rem;
 }
 
@@ -370,6 +419,35 @@ body.modal-open {
 .service-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-blue);
+}
+
+.service-card.project-featured {
+    grid-column: 1 / -1;
+}
+
+.service-card.project-featured .card-title {
+    white-space: pre-line;
+}
+
+@media (min-width: 1201px) {
+    .service-card.project-featured {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+
+    .service-card.project-featured .card-content {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .service-card.project-featured .card-visual {
+        grid-column: 2;
+        grid-row: 1;
+        height: 100%;
+        min-height: var(--card-visual-height, 250px);
+        border-left: 1px solid var(--border-color);
+        border-bottom: 0;
+    }
 }
 
 .card-visual {
@@ -902,7 +980,8 @@ body.modal-open {
         gap: 2rem;
     }
 
-    #about {
+    #about,
+    #hub-overview {
         display: flex;
         flex-direction: column;
     }

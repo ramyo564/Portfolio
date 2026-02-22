@@ -253,6 +253,36 @@ function renderHero() {
     }
     setYouTubeDataAttribute(graphContainer, hero);
 
+    if (section && graphContainer) {
+        let visualStack = section.querySelector('.hero-visual-stack');
+        if (!(visualStack instanceof HTMLElement)) {
+            visualStack = document.createElement('div');
+            visualStack.className = 'hero-visual-stack';
+            graphContainer.before(visualStack);
+        }
+
+        if (graphContainer.parentElement !== visualStack) {
+            visualStack.prepend(graphContainer);
+        }
+
+        let noteList = visualStack.querySelector('.hero-diagram-notes');
+        if (!(noteList instanceof HTMLUListElement)) {
+            noteList = document.createElement('ul');
+            noteList.className = 'hero-diagram-notes';
+            visualStack.appendChild(noteList);
+        }
+
+        noteList.replaceChildren();
+        const noteLines = Array.isArray(hero.diagramNotes) && hero.diagramNotes.length > 0
+            ? hero.diagramNotes
+            : ['Add notes in templateConfig.hero.diagramNotes'];
+        noteLines.forEach((line) => {
+            const item = document.createElement('li');
+            item.textContent = String(line).replace(/^>\s*/, '');
+            noteList.appendChild(item);
+        });
+    }
+
     if (!metrics) {
         return;
     }
