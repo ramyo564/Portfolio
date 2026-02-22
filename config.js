@@ -12,9 +12,9 @@ export const templateConfig = {
         panelUid: 'ID: HUB-01',
         diagramId: 'portfolio-hub-map',
         metrics: [
-            '프로젝트별 구조 페이지(Architecture)와 문제해결 페이지(Case Study)를 한 곳에서 탐색할 수 있도록 구성했습니다.',
-            '각 카드에서 서비스 구성, 트러블슈팅, 코드 근거, 저장소 링크를 즉시 이동할 수 있습니다.',
-            '읽기 순서는 Project Hub -> Cross Project Comparison -> Timeline을 권장합니다.'
+            '30초 스캔 1) 문제: 운영 병목으로 읽기/쓰기 p95가 975ms/1.9s까지 상승 -> 선택: MVC + API/Worker 분리와 부하 재현 검증 -> 결과: 141ms/126ms로 개선.',
+            '30초 스캔 2) 문제: 읽기 트래픽에서 DB 커넥션 점유 누적 -> 선택: Redis Cache-Aside와 Cacheable 우선 실행 -> 결과: READ RPS 972 -> 3,680(+279%).',
+            '30초 스캔 3) 문제: 동기 저장 경로의 지연/정합성 리스크 -> 선택: Redis Pending + RabbitMQ + Retry/DLQ -> 결과: WRITE p95 1.9s -> 126ms(-93%)와 복구 경로 확보.'
         ]
     },
 
@@ -35,10 +35,10 @@ export const templateConfig = {
             diagramId: 'comparison-axis-map',
             navLabel: 'COMPARE',
             metrics: [
-                'MESSAGING / PERFORMANCE: RabbitMQ 비동기 발행, 배치 처리, p95 및 RPS 개선 사례를 통합 비교합니다.',
-                'IDENTITY / AUTH: JWT Claims 경량화, 접근 게이트, 인증/인가 경로의 일관성 개선을 비교합니다.',
-                'CACHE / TRANSACTION: Redis pending key, readOnly 분리, idle transaction 제거 전략을 프로젝트별로 확인합니다.',
-                'DEPLOYMENT / COST: Docker 최적화, GitHub Actions, 클라우드 마이그레이션 기반 운영 효율 개선을 비교합니다.'
+                'MESSAGING / CONSISTENCY: 문제(동기 저장 시 지연/재시도 충돌) -> 선택(API/Worker 분리 + RabbitMQ 배치 소비 + Retry/DLQ) -> 결과(WRITE p95 1.9s -> 126ms, 유실 대응 경로 확보).',
+                'IDENTITY / AUTH: 문제(인증 경로 분산으로 디버깅 비용 증가) -> 선택(JWT Claims 경량화 + 접근 게이트 일원화) -> 결과(인증/인가 실패 원인 추적 시간 단축).',
+                'CACHE / PERFORMANCE: 문제(읽기 요청에서 idle transaction과 커넥션 점유 누적) -> 선택(Redis pending key + readOnly 분리 + Cacheable 선행) -> 결과(READ p95 975ms -> 141ms, READ RPS +279%).',
+                'DEPLOYMENT / COST: 문제(수동 배포와 클라우드 비용 부담) -> 선택(Docker 경량화 + GitHub Actions + 홈서버 전환) -> 결과(배포 리드타임 단축, 운영비 절감).'
             ]
         },
         {
@@ -84,10 +84,10 @@ export const templateConfig = {
                     cards: [
                         {
                             mermaidId: 'ln-project-architecture',
-                            title: 'L_N_Project (Life Navigation)',
+                            title: '실패한 TODO 원인을 분석하고 다음 실행 계획으로 재구성하는 서비스',
                             youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
-                            subtitle: '개인 프로젝트 · 2025.04 - 현재',
-                            overview: '실패한 TODO 원인을 분석하고 다음 실행 계획으로 재구성하는 서비스입니다.',
+                            subtitle: '개인 프로젝트 · 2025.04 - 현재 · L_N_Project (Life Navigation)',
+                            overview: '운영 중 성능/비용/안정성 문제를 재현 가능한 테스트로 검증하며 개선한 프로젝트입니다.',
                             role: 'BE/FE/DevOps 전 영역 설계, 구현, 운영 자동화',
                             skills: ['Spring Boot', 'FastAPI', 'React', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Qdrant', 'Docker'],
                             highlights: [
@@ -103,9 +103,9 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'hoops-architecture',
-                            title: 'Hoops',
-                            subtitle: '팀 프로젝트(BE 4명 / FE 3명) · 2024.04 - 2024.08',
-                            overview: '위치 기반 실시간 농구 매칭 서비스로 소셜/채팅/신고·관리 기능을 통합한 플랫폼입니다.',
+                            title: '위치 기반 실시간 농구 매칭과 채팅/신고 관리를 통합한 서비스',
+                            subtitle: '팀 프로젝트(BE 4명 / FE 3명) · 2024.04 - 2024.08 · Hoops',
+                            overview: '실시간 매칭 흐름과 운영 자동화에 초점을 맞춰 백엔드/인프라 품질을 개선했습니다.',
                             role: '백엔드 설계 및 구현, CI/CD 자동화, 인프라 비용/배포 최적화',
                             skills: ['Spring Boot', 'WebSocket', 'SSE', 'MariaDB', 'Redis', 'Docker', 'GitHub Actions', 'AWS'],
                             highlights: [
@@ -122,9 +122,9 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
-                            title: 'realtime_auction',
-                            subtitle: '팀 프로젝트(BE 4명) · 2023.09 - 2024.11',
-                            overview: 'WebSocket 입찰, Celery 기반 경매 라이프사이클, 결제/채팅을 연결한 경매 플랫폼입니다.',
+                            title: '실시간 입찰, 결제, 채팅 흐름을 연결한 경매 서비스',
+                            subtitle: '팀 프로젝트(BE 4명) · 2023.09 - 2024.11 · realtime_auction',
+                            overview: '동시성 제어와 결제 상태 정합성 중심으로 경매 도메인의 핵심 흐름을 안정화했습니다.',
                             role: '결제 흐름, 검색/모델링 최적화, 상품 API 안정성 강화',
                             skills: ['Django', 'DRF', 'Channels', 'Celery', 'Redis', 'KakaoPay API', 'django-mptt', 'JWT'],
                             highlights: [
@@ -140,9 +140,9 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
-                            title: 'Upgrade_Django4',
-                            subtitle: '개인 프로젝트 · 2023.05 - 2023.06',
-                            overview: 'Django 기반 쇼핑몰 프로젝트로 인증/결제/주문/배포의 전체 흐름을 구현했습니다.',
+                            title: '인증/결제/주문/배포의 전체 흐름을 구현한 Django 쇼핑몰 서비스',
+                            subtitle: '개인 프로젝트 · 2023.05 - 2023.06 · Upgrade_Django4',
+                            overview: '단독 개발로 기능 구현부터 배포/마이그레이션까지 운영 가능한 형태로 완성했습니다.',
                             role: '기획부터 구현, 배포까지 단독 진행',
                             skills: ['Django 4.2', 'PostgreSQL', 'PayPal', 'KakaoPay', 'AWS EB', 'S3', 'Route53'],
                             highlights: [
