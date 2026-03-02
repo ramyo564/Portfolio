@@ -11,6 +11,23 @@ export const templateConfig = {
         panelTitle: 'PORTFOLIO_HUB_OVERVIEW',
         panelUid: 'ID: HUB-01',
         diagramId: 'portfolio-hub-map',
+        intro: '재현 가능한 성능 개선과 운영 자동화를 증거 기반으로 설명하는 백엔드 개발자',
+        statCards: [
+            { label: 'READ p95', value: '141ms', delta: '-86%' },
+            { label: 'WRITE p95', value: '126ms', delta: '-93%' },
+            { label: 'READ RPS', value: '3,680', delta: '+279%' }
+        ],
+        quickLinks: [
+            { label: 'FEATURED_L_N', href: '#ln-featured', variant: 'primary' },
+            { label: 'SYSTEM_ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'secondary' },
+            { label: 'EVIDENCE (k6/Grafana)', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'ghost' }
+        ],
+        statNote: '측정 조건: k6 500VU · Grafana · scenario(read/write/auth) · runs N · timeout/fail rate 추적',
+        diagramNotes: [
+            '프로젝트 간 관계 지도는 버튼으로 계층화해 확인할 수 있습니다.',
+            'ARCHITECTURE Page에서는 아키텍처 설명과 구성 이유를 확인할 수 있습니다.',
+            'CASE_STUDY Page에서는 코드를 추적해 성능 개선 증거를 확인할 수 있습니다.'
+        ],
         metrics: [
             '30초 스캔 1) 문제: 운영 병목으로 읽기/쓰기 p95가 975ms/1.9s까지 상승 -> 선택: MVC + API/Worker 분리와 부하 재현 검증 -> 결과: 141ms/126ms로 개선.',
             '30초 스캔 2) 문제: 읽기 트래픽에서 DB 커넥션 점유 누적 -> 선택: Redis Cache-Aside와 Cacheable 우선 실행 -> 결과: READ RPS 972 -> 3,680(+279%).',
@@ -20,8 +37,7 @@ export const templateConfig = {
 
     navigation: [
         { label: 'OVERVIEW', target: '#hub-overview' },
-        { label: 'PROJECT_HUB', target: '#project-hub' },
-        { label: 'COMPARE', target: '#cross-project-comparison' },
+        { label: 'PROJ_HUB', target: '#project-hub' },
         { label: 'TIMELINE', target: '#project-timeline' },
         { label: 'SKILL_SET', target: '#skills' },
         { label: 'CONTACT', target: '#contact' }
@@ -29,22 +45,9 @@ export const templateConfig = {
 
     topPanels: [
         {
-            sectionId: 'cross-project-comparison',
-            panelTitle: 'CROSS_PROJECT_COMPARISON',
-            panelUid: 'ID: HUB-02',
-            diagramId: 'comparison-axis-map',
-            navLabel: 'COMPARE',
-            metrics: [
-                'MESSAGING / CONSISTENCY: 문제(동기 저장 시 지연/재시도 충돌) -> 선택(API/Worker 분리 + RabbitMQ 배치 소비 + Retry/DLQ) -> 결과(WRITE p95 1.9s -> 126ms, 유실 대응 경로 확보).',
-                'IDENTITY / AUTH: 문제(인증 경로 분산으로 디버깅 비용 증가) -> 선택(JWT Claims 경량화 + 접근 게이트 일원화) -> 결과(인증/인가 실패 원인 추적 시간 단축).',
-                'CACHE / PERFORMANCE: 문제(읽기 요청에서 idle transaction과 커넥션 점유 누적) -> 선택(Redis pending key + readOnly 분리 + Cacheable 선행) -> 결과(READ p95 975ms -> 141ms, READ RPS +279%).',
-                'DEPLOYMENT / COST: 문제(수동 배포와 클라우드 비용 부담) -> 선택(Docker 경량화 + GitHub Actions + 홈서버 전환) -> 결과(배포 리드타임 단축, 운영비 절감).'
-            ]
-        },
-        {
             sectionId: 'project-timeline',
             panelTitle: 'DELIVERY_TIMELINE',
-            panelUid: 'ID: HUB-03',
+            panelUid: 'ID: HUB-02',
             diagramId: 'release-timeline-map',
             navLabel: 'TIMELINE',
             metrics: [
@@ -84,16 +87,18 @@ export const templateConfig = {
                     cards: [
                         {
                             mermaidId: 'ln-project-architecture',
-                            title: '실패한 TODO 원인을 분석하고 다음 실행 계획으로 재구성하는 서비스',
+                            anchorId: 'ln-featured',
+                            cardClass: 'project-featured',
+                            title: '실패 TODO를 AI가 자동으로 분석해 "원인+계획" 재구성하는 서비스\np95 975ms→141ms, RPS +279%',
                             youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: '개인 프로젝트 · 2025.04 - 현재 · L_N_Project (Life Navigation)',
-                            overview: '운영 중 성능/비용/안정성 문제를 재현 가능한 테스트로 검증하며 개선한 프로젝트입니다.',
-                            role: 'BE/FE/DevOps 전 영역 설계, 구현, 운영 자동화',
-                            skills: ['Spring Boot', 'FastAPI', 'React', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Qdrant', 'Docker'],
+                            overview: 'k6 부하테스트로 병목을 재현하고 Grafana로 p95/RPS를 검증한 뒤, 설계/운영 개선안을 반복 적용했습니다.',
+                            role: '백엔드(도메인/성능/비동기) 중심 + 배포/관측 자동화(DevOps)',
+                            skills: ['Spring Boot', 'FastAPI', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Docker'],
                             highlights: [
-                                'READ p95 975ms -> 141ms (-86%), WRITE p95 1.9s -> 126ms (-93%)',
-                                'READ RPS +279%, WRITE RPS +146% 개선',
-                                'AWS 비용을 홈서버 전환으로 절감'
+                                '재현 검증: k6(500VU) / Grafana 지표 추적',
+                                '구조 선택: API/Worker 분리 + 캐시/비동기 + Retry/DLQ',
+                                '성과 결과: READ p95 975→141ms, WRITE 1.9s→126ms, timeout 15%→0%'
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'primary' },
@@ -103,7 +108,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'hoops-architecture',
-                            title: '위치 기반 실시간 농구 매칭과 채팅/신고 관리를 통합한 서비스',
+                            title: 'Hoops',
                             subtitle: '팀 프로젝트(BE 4명 / FE 3명) · 2024.04 - 2024.08 · Hoops',
                             overview: '실시간 매칭 흐름과 운영 자동화에 초점을 맞춰 백엔드/인프라 품질을 개선했습니다.',
                             role: '백엔드 설계 및 구현, CI/CD 자동화, 인프라 비용/배포 최적화',
@@ -122,7 +127,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
-                            title: '실시간 입찰, 결제, 채팅 흐름을 연결한 경매 서비스',
+                            title: 'realtime_auction',
                             subtitle: '팀 프로젝트(BE 4명) · 2023.09 - 2024.11 · realtime_auction',
                             overview: '동시성 제어와 결제 상태 정합성 중심으로 경매 도메인의 핵심 흐름을 안정화했습니다.',
                             role: '결제 흐름, 검색/모델링 최적화, 상품 API 안정성 강화',
@@ -140,7 +145,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
-                            title: '인증/결제/주문/배포의 전체 흐름을 구현한 Django 쇼핑몰 서비스',
+                            title: 'Upgrade_Django4',
                             subtitle: '개인 프로젝트 · 2023.05 - 2023.06 · Upgrade_Django4',
                             overview: '단독 개발로 기능 구현부터 배포/마이그레이션까지 운영 가능한 형태로 완성했습니다.',
                             role: '기획부터 구현, 배포까지 단독 진행',

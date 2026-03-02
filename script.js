@@ -287,7 +287,28 @@ function renderHero() {
         return;
     }
     metrics.replaceChildren();
-    renderMetricLines(metrics, hero.metrics, '> Add metrics in templateConfig.hero.metrics');
+
+    const intro = typeof hero.intro === 'string' ? hero.intro.trim() : '';
+    if (intro) {
+        const introLine = document.createElement('p');
+        introLine.className = 'hero-intro';
+        introLine.textContent = intro;
+        metrics.append(introLine);
+    }
+
+    const hasStatCards = renderHeroStatCards(metrics, hero.statCards);
+    const hasQuickLinks = renderHeroQuickLinks(metrics, hero.quickLinks);
+
+    if (typeof hero.statNote === 'string' && hero.statNote.trim()) {
+        const note = document.createElement('p');
+        note.className = 'hero-stat-note';
+        note.textContent = hero.statNote.trim();
+        metrics.append(note);
+    }
+
+    if (!intro && !hasStatCards && !hasQuickLinks) {
+        renderMetricLines(metrics, hero.metrics, '> Add metrics in templateConfig.hero.metrics');
+    }
 }
 
 function renderMetricLines(container, lines, fallbackText) {
@@ -305,6 +326,76 @@ function renderMetricLines(container, lines, fallbackText) {
         item.textContent = `> ${cleanLine}`;
         container.appendChild(item);
     });
+}
+
+function renderHeroStatCards(container, statCards) {
+    const cards = Array.isArray(statCards) ? statCards.filter((item) => item && (item.label || item.value)) : [];
+    if (cards.length === 0) {
+        return false;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'hero-stat-grid';
+
+    cards.forEach((item) => {
+        const card = document.createElement('article');
+        card.className = 'hero-stat-card';
+
+        const label = document.createElement('p');
+        label.className = 'hero-stat-label';
+        label.textContent = item.label ?? '';
+
+        const value = document.createElement('p');
+        value.className = 'hero-stat-value';
+        value.textContent = item.value ?? '';
+
+        card.append(label, value);
+
+        if (item.delta) {
+            const delta = document.createElement('p');
+            delta.className = 'hero-stat-delta';
+            delta.textContent = item.delta;
+            card.append(delta);
+        }
+
+        grid.append(card);
+    });
+
+    container.append(grid);
+    return true;
+}
+
+function renderHeroQuickLinks(container, quickLinks) {
+    const links = Array.isArray(quickLinks) ? quickLinks.filter((item) => item?.href) : [];
+    if (links.length === 0) {
+        return false;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'hero-quick-links';
+
+    links.forEach((item) => {
+        const link = document.createElement('a');
+        link.className = 'hero-quick-link';
+
+        const variant = String(item.variant ?? '').trim().toLowerCase();
+        if (variant) {
+            link.classList.add(`is-${variant}`);
+        }
+
+        link.href = item.href;
+        link.textContent = item.label ?? 'LINK';
+
+        if (!String(item.href).startsWith('#') && !String(item.href).startsWith('mailto:')) {
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+        }
+
+        row.append(link);
+    });
+
+    container.append(row);
+    return true;
 }
 
 function createTopPanel(panel, index) {
@@ -508,6 +599,9 @@ function createCardLinks(card) {
 function createServiceCard(card, sectionConfig) {
     const article = document.createElement('article');
     article.className = `service-card ${sectionConfig.cardClass ?? ''} ${card.cardClass ?? ''}`.trim();
+    if (card.anchorId) {
+        article.id = card.anchorId;
+    }
 
     const visual = document.createElement('div');
     visual.className = 'card-visual';
