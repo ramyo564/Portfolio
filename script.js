@@ -296,6 +296,7 @@ function renderHero() {
         metrics.append(introLine);
     }
 
+    const hasProfileSummary = renderHeroProfileSummary(metrics, hero.profileSummaryLines);
     const hasStatCards = renderHeroStatCards(metrics, hero.statCards);
     const hasQuickLinks = renderHeroQuickLinks(metrics, hero.quickLinks);
 
@@ -306,7 +307,7 @@ function renderHero() {
         metrics.append(note);
     }
 
-    if (!intro && !hasStatCards && !hasQuickLinks) {
+    if (!intro && !hasProfileSummary && !hasStatCards && !hasQuickLinks) {
         renderMetricLines(metrics, hero.metrics, '> Add metrics in templateConfig.hero.metrics');
     }
 }
@@ -326,6 +327,28 @@ function renderMetricLines(container, lines, fallbackText) {
         item.textContent = `> ${cleanLine}`;
         container.appendChild(item);
     });
+}
+
+function renderHeroProfileSummary(container, lines) {
+    const summaryLines = Array.isArray(lines)
+        ? lines.map((line) => String(line).trim()).filter(Boolean)
+        : [];
+
+    if (summaryLines.length === 0) {
+        return false;
+    }
+
+    const list = document.createElement('ul');
+    list.className = 'hero-profile-summary';
+
+    summaryLines.forEach((line) => {
+        const item = document.createElement('li');
+        item.textContent = line;
+        list.appendChild(item);
+    });
+
+    container.append(list);
+    return true;
 }
 
 function renderHeroStatCards(container, statCards) {

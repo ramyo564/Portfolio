@@ -12,9 +12,16 @@ export const templateConfig = {
         panelUid: 'ID: HUB-01',
         diagramId: 'portfolio-hub-map',
         intro: '재현 가능한 성능 개선과 운영 자동화를 증거 기반으로 설명하는 백엔드 개발자',
+        profileSummaryLines: [
+            '실패한 TODO/업무 관리 패턴을 성능, 도메인 규칙, 운영 자동화 관점에서 다시 설계합니다.',
+            'Spring Boot, FastAPI, RabbitMQ, Redis 기반으로 대량 읽기/쓰기 트래픽과 비동기 흐름을 튜닝했습니다.',
+            '설계 -> 구현 -> 부하테스트(k6) -> 관측(Grafana/로그) -> 배포/문서화까지 단독으로 끝까지 가져갑니다.'
+        ],
         statCards: [
             { label: 'AUTH QUERIES', value: '21 -> 3', delta: '-86%' },
-            { label: 'WRITE p95', value: '500ms -> 50ms', delta: '-90%' },
+            { label: 'READ p95', value: '975ms -> 141ms', delta: '-86%' },
+            { label: 'READ RPS', value: '972 -> 3680', delta: '+279%' },
+            { label: 'WRITE p95', value: '1.9s -> 126ms', delta: '-93%' },
             { label: 'WRITE RPS', value: '373 -> 916', delta: '+146%' }
         ],
         quickLinks: [
@@ -30,8 +37,8 @@ export const templateConfig = {
         ],
         metrics: [
             '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 인증/권한 쿼리 21 -> 3으로 축소.',
-            '30초 스캔 2) Case 5: 동기 메시지 발행 병목 분리로 timeout 15% -> 0%, write p95 500ms -> 50ms.',
-            '30초 스캔 3) Case 6: 통합 튜닝으로 read RPS 972 -> 3,680, write RPS 373 -> 916 (2026-03-02 기준).'
+            '30초 스캔 2) 통합 튜닝으로 write p95 1.9s -> 126ms, timeout 15% -> 0%.',
+            '30초 스캔 3) 통합 튜닝으로 read RPS 972 -> 3680, write RPS 373 -> 916, read p95 975ms -> 141ms (2026-03-02 기준).'
         ]
     },
 
@@ -83,23 +90,25 @@ export const templateConfig = {
             groups: [
                 {
                     title: 'ARCHITECTURE + PROBLEM SOLVING TRACK',
-                    desc: '각 프로젝트에서 구성 설명 페이지와 케이스 페이지를 2트랙으로 분리해 연결합니다.',
+                    desc: '모든 카드를 문제 정의 -> 기간/역할 -> 결과 -> 스택 순서로 통일했습니다.',
                     cards: [
                         {
                             mermaidId: 'ln-project-architecture',
                             anchorId: 'ln-featured',
                             cardClass: 'project-featured',
-                            title: 'Upgrade Todo 병목을 Case 1~6으로 분해해 증거 기반으로 해결한 서비스\n쿼리 21→3, timeout 15%→0%, write RPS +146%',
+                            title: '실패한 TODO 원인을 분석해 다음 실행 계획으로 재구성한 개인 서비스 (Upgrade Todo)',
                             youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
-                            subtitle: '개인 프로젝트 · 2025.09 - 2026.03(최신 동기화 2026-03-02) · L_N_Project',
-                            overview: 'Case 1~6을 문제-원인-해결-결과 포맷으로 정리하고, k6/Grafana/로그 증거로 개선 효과를 교차 검증했습니다.',
-                            role: '백엔드(성능/트랜잭션/비동기) 중심 + 증거 문서화/운영 검증',
+                            subtitle: '개인 · 2025.09 - 2026.03(최신 동기화 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
+                            overview: '결과: 인증/권한 쿼리 21->3, timeout 15%->0%, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
+                            stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
                             skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
                             highlights: [
+                                'Case 1: 회원가입 동기 200 -> 비동기 202(+X-User-Id), Outbox 큐잉으로 영속/메시징 경계 분리',
                                 'Case 2: 인증/권한 쿼리 21->3 (JWT Claims + AOP Gate)',
+                                'Case 3: idle in transaction 수십~수백 row -> 0 row, 생성 직후 조회 403 -> 200(Pending Cache)',
                                 'Case 4: Async Gap 보완으로 생성 직후 권한 오류율 5%->0%',
-                                'Case 5: Async Publisher 적용으로 timeout 15%->0%, write p95 500ms->50ms',
-                                'Case 6: 통합 튜닝으로 read RPS 972->3,680, write RPS 373->916'
+                                'Case 5: Async Publisher 적용으로 timeout 15%->0%',
+                                'Case 6: 통합 튜닝으로 read RPS 972->3680, write RPS 373->916, read p95 975ms->141ms, write p95 1.9s->126ms'
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'primary' },
@@ -110,10 +119,10 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'hoops-architecture',
-                            title: 'Hoops',
-                            subtitle: '팀 프로젝트(BE 4명 / FE 3명) · 2024.04 - 2024.08 · Hoops',
-                            overview: '실시간 매칭 흐름과 운영 자동화에 초점을 맞춰 백엔드/인프라 품질을 개선했습니다.',
-                            role: '백엔드 설계 및 구현, CI/CD 자동화, 인프라 비용/배포 최적화',
+                            title: '실시간 매칭/알림과 운영 배포 흐름을 안정화한 팀 서비스 (Hoops)',
+                            subtitle: '팀(BE 4 / FE 3) · 2024.04 - 2024.08 · 역할: 백엔드 설계/구현 + CI/CD 자동화',
+                            overview: '결과: 배포 15분+ 수동 -> 3분 이내 자동화, Docker 이미지 600MB -> 250MB, AWS 운영 비용 약 80% 절감',
+                            stackSummary: 'Spring Boot, WebSocket, SSE, MariaDB, Redis, Docker, GitHub Actions, AWS',
                             skills: ['Spring Boot', 'WebSocket', 'SSE', 'MariaDB', 'Redis', 'Docker', 'GitHub Actions', 'AWS'],
                             highlights: [
                                 '배포 시간 15분+ 수동 프로세스에서 3분 이내 자동화로 단축',
@@ -129,10 +138,10 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
-                            title: 'realtime_auction',
-                            subtitle: '팀 프로젝트(BE 4명) · 2023.09 - 2024.11 · realtime_auction',
-                            overview: '동시성 제어와 결제 상태 정합성 중심으로 경매 도메인의 핵심 흐름을 안정화했습니다.',
-                            role: '결제 흐름, 검색/모델링 최적화, 상품 API 안정성 강화',
+                            title: '경매 도메인의 동시성/결제 정합성을 강화한 팀 서비스 (realtime_auction)',
+                            subtitle: '팀(BE 4) · 2023.09 - 2024.11 · 역할: 결제 흐름/검색 모델링 최적화 + API 안정화',
+                            overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
+                            stackSummary: 'Django, DRF, Channels, Celery, Redis, KakaoPay API, django-mptt, JWT',
                             skills: ['Django', 'DRF', 'Channels', 'Celery', 'Redis', 'KakaoPay API', 'django-mptt', 'JWT'],
                             highlights: [
                                 '입찰 동시성 제어로 최고가 업데이트 정합성 확보',
@@ -147,10 +156,10 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
-                            title: 'Upgrade_Django4',
-                            subtitle: '개인 프로젝트 · 2023.05 - 2023.06 · Upgrade_Django4',
-                            overview: '단독 개발로 기능 구현부터 배포/마이그레이션까지 운영 가능한 형태로 완성했습니다.',
-                            role: '기획부터 구현, 배포까지 단독 진행',
+                            title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 개인 서비스 (Upgrade_Django4)',
+                            subtitle: '개인 · 2023.05 - 2023.06 · 역할: 기획 -> 구현 -> 배포 단독 수행',
+                            overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
+                            stackSummary: 'Django 4.2, PostgreSQL, PayPal, KakaoPay, AWS EB, S3, Route53',
                             skills: ['Django 4.2', 'PostgreSQL', 'PayPal', 'KakaoPay', 'AWS EB', 'S3', 'Route53'],
                             highlights: [
                                 '세션 카트 병합과 주문 완료 흐름을 단일 계약으로 정리',

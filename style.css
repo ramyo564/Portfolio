@@ -310,6 +310,28 @@ body.modal-open {
     line-height: 1.45;
 }
 
+.hero-profile-summary {
+    list-style: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: rgba(10, 16, 25, 0.58);
+    padding: 0.52rem 0.62rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+}
+
+.hero-profile-summary li {
+    color: var(--text-primary);
+    font-size: 0.79rem;
+    line-height: 1.46;
+}
+
+.hero-profile-summary li::before {
+    content: "- ";
+    color: var(--accent-blue);
+}
+
 .hero-stat-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -336,10 +358,11 @@ body.modal-open {
 
 .hero-stat-value {
     font-family: var(--font-code);
-    font-size: 1.2rem;
+    font-size: 1.08rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .hero-stat-delta {
