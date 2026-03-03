@@ -192,6 +192,11 @@ function setupMobileNav() {
             closeNav();
         } else {
             openNav();
+            // GA4 Event Tracking
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'toggle_mobile_nav'
+            });
         }
     });
 
@@ -755,6 +760,17 @@ function renderContact() {
             action.target = '_blank';
             action.rel = 'noopener noreferrer';
         }
+
+        // GA4 Event Tracking
+        action.addEventListener('click', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'click_contact_link',
+                link_label: item.label,
+                link_url: item.href
+            });
+        });
+
         actions.appendChild(action);
     });
 }
@@ -817,6 +833,17 @@ function renderNavigation() {
         link.className = 'nav-item';
         link.href = normalizeHashTarget(item.target);
         link.textContent = item.label || 'SECTION';
+
+        // GA4 Event Tracking
+        link.addEventListener('click', () => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'click_navigation',
+                nav_label: item.label,
+                nav_target: item.target
+            });
+        });
+
         nav.appendChild(link);
     });
 }
@@ -879,6 +906,13 @@ function setupScrollSpy() {
         }
 
         matched.links.forEach((link) => link.classList.add('is-active'));
+
+        // GA4 Event Tracking
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'section_view',
+            section_id: targetId
+        });
     };
 
     const rebuildTargetOrder = () => {
@@ -1249,6 +1283,14 @@ function setupMermaidModal() {
         modal.setAttribute('aria-hidden', 'false');
         document.body.classList.add('modal-open');
         scheduleCenterModalView();
+
+        // GA4 Event Tracking
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'open_modal',
+            modal_title: titleText,
+            has_video: !!videoId
+        });
     };
 
     controls.querySelectorAll('[data-mermaid-zoom]').forEach((button) => {
@@ -1264,15 +1306,25 @@ function setupMermaidModal() {
 
             if (action === 'in') {
                 setZoom(zoom + ZOOM_STEP);
+                // GA4 Event Tracking
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'in' });
                 return;
             }
             if (action === 'out') {
                 setZoom(zoom - ZOOM_STEP);
+                // GA4 Event Tracking
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'out' });
                 return;
             }
             zoom = 1;
             applyZoom();
             scheduleCenterModalView();
+
+            // GA4 Event Tracking
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'reset' });
         });
     });
 
