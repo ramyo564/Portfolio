@@ -96,7 +96,7 @@ export const templateConfig = {
                             mermaidId: 'ln-project-architecture',
                             anchorId: 'ln-featured',
                             cardClass: 'project-featured',
-                            title: '실패한 TODO 원인을 분석해 다음 실행 계획으로 재구성한 개인 서비스 (Upgrade Todo)',
+                            title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스 (Upgrade Todo)',
                             youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: '개인 · 2025.09 - 2026.03(최신 동기화 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
                             overview: '결과: 인증/권한 쿼리 21->3, timeout 15%->0%, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
