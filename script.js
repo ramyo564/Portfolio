@@ -147,6 +147,93 @@ function setText(id, value) {
     }
 }
 
+const analyticsSession = {
+    id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+};
+
+function pushDataLayerEvent(payload) {
+    if (!payload || typeof payload !== 'object') {
+        return;
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+}
+
+function detectLinkType(href) {
+    const target = String(href || '').trim().toLowerCase();
+    if (!target) {
+        return 'unknown';
+    }
+    if (target.startsWith('mailto:')) {
+        return 'mailto';
+    }
+    if (target.startsWith('#')) {
+        return 'anchor';
+    }
+    if (target.startsWith('http://') || target.startsWith('https://')) {
+        return 'external';
+    }
+    return 'internal';
+}
+
+function trackSelectContent({
+    contentType,
+    itemId,
+    itemName,
+    sectionName,
+    interactionAction = 'click',
+    elementType,
+    elementLabel,
+    linkUrl,
+    linkType,
+    modalName,
+    value,
+    ...extra
+}) {
+    const payload = {
+        event: 'select_content',
+        tracking_version: '2026-03-ga4-unified-v1',
+        session_id: analyticsSession.id,
+        page_path: window.location.pathname,
+        page_title: document.title,
+        page_type: 'portfolio_hub',
+        content_type: contentType || 'unknown',
+        item_id: itemId || 'unknown',
+        section_name: sectionName || 'unknown',
+        interaction_action: interactionAction
+    };
+
+    if (itemName) {
+        payload.item_name = itemName;
+    }
+    if (elementType) {
+        payload.element_type = elementType;
+    }
+    if (elementLabel) {
+        payload.element_label = elementLabel;
+    }
+    if (linkUrl) {
+        payload.link_url = linkUrl;
+    }
+    if (linkType) {
+        payload.link_type = linkType;
+    }
+    if (modalName) {
+        payload.modal_name = modalName;
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        payload.value = value;
+    }
+
+    Object.entries(extra).forEach(([key, valueItem]) => {
+        if (valueItem !== undefined && valueItem !== null && valueItem !== '') {
+            payload[key] = valueItem;
+        }
+    });
+
+    pushDataLayerEvent(payload);
+}
+
 function setupUptime() {
     const uptimeElement = byId('uptime');
     if (!uptimeElement) {
@@ -193,9 +280,14 @@ function setupMobileNav() {
         } else {
             openNav();
             // GA4 Event Tracking
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'toggle_mobile_nav'
+            trackSelectContent({
+                contentType: 'navigation',
+                itemId: 'header_nav',
+                itemName: 'Header Navigation',
+                sectionName: 'header',
+                interactionAction: 'open_navigation',
+                elementType: 'button',
+                elementLabel: 'NAV_TOGGLE'
             });
         }
     });
@@ -579,7 +671,7 @@ function createHighlightList(items) {
     return list;
 }
 
-function createCardLinks(card) {
+function createCardLinks(card, sectionConfig = {}) {
     const links = Array.isArray(card.links) ? card.links.filter((item) => item?.href) : [];
     if (links.length === 0 && card.learnMore && card.learnMore !== '#') {
         links.push({ label: card.linkLabel ?? 'LEARN MORE', href: card.learnMore });
@@ -608,13 +700,17 @@ function createCardLinks(card) {
 
         // GA4 Event Tracking
         link.addEventListener('click', () => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'select_content',
-                content_type: 'project_link',
-                item_id: card.title || 'unknown_project',
-                link_label: item.label,
-                link_url: item.href
+            trackSelectContent({
+                contentType: 'project_link',
+                itemId: card.mermaidId || card.title || 'unknown_project',
+                itemName: card.title || 'Project',
+                sectionName: sectionConfig.id || 'project_hub',
+                interactionAction: 'open_link',
+                elementType: 'link',
+                elementLabel: item.label || 'LINK',
+                linkUrl: item.href,
+                linkType: detectLinkType(item.href),
+                link_label: item.label || 'LINK'
             });
         });
 
@@ -664,7 +760,7 @@ function createServiceCard(card, sectionConfig) {
     const stackLine = createMetaLine('STACK', card.stackSummary);
     const tags = createTagList(card.skills);
     const highlights = createHighlightList(card.highlights);
-    const links = createCardLinks(card);
+    const links = createCardLinks(card, sectionConfig);
 
     content.append(title);
     if (subtitleText) {
@@ -763,11 +859,17 @@ function renderContact() {
 
         // GA4 Event Tracking
         action.addEventListener('click', () => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'click_contact_link',
-                link_label: item.label,
-                link_url: item.href
+            trackSelectContent({
+                contentType: 'contact_action',
+                itemId: item.label || 'CONTACT_LINK',
+                itemName: item.label || 'Contact',
+                sectionName: contact.sectionId || 'contact',
+                interactionAction: 'open_link',
+                elementType: 'button',
+                elementLabel: item.label || 'LINK',
+                linkUrl: item.href,
+                linkType: detectLinkType(item.href),
+                link_label: item.label || 'LINK'
             });
         });
 
@@ -836,11 +938,20 @@ function renderNavigation() {
 
         // GA4 Event Tracking
         link.addEventListener('click', () => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'click_navigation',
-                nav_label: item.label,
-                nav_target: item.target
+            const normalizedTarget = normalizeHashTarget(item.target);
+            const targetId = normalizedTarget.replace(/^#/, '') || 'navigation_target';
+            trackSelectContent({
+                contentType: 'navigation',
+                itemId: targetId,
+                itemName: item.label || 'SECTION',
+                sectionName: 'header_nav',
+                interactionAction: 'navigate',
+                elementType: 'link',
+                elementLabel: item.label || 'SECTION',
+                linkUrl: normalizedTarget,
+                linkType: 'anchor',
+                nav_label: item.label || 'SECTION',
+                nav_target: normalizedTarget
             });
         });
 
@@ -908,9 +1019,14 @@ function setupScrollSpy() {
         matched.links.forEach((link) => link.classList.add('is-active'));
 
         // GA4 Event Tracking
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            event: 'section_view',
+        trackSelectContent({
+            contentType: 'section_view',
+            itemId: targetId,
+            itemName: targetId,
+            sectionName: 'scroll_spy',
+            interactionAction: 'view',
+            elementType: 'section',
+            elementLabel: targetId,
             section_id: targetId
         });
     };
@@ -1014,6 +1130,8 @@ function setupMermaidModal() {
     let activeSvg = null;
     let activeCanvas = null;
     let activeViewport = null;
+    let activeDiagramId = '';
+    let activeDiagramTitle = '';
     let baseSvgWidth = 0;
     let baseSvgHeight = 0;
     let isPanning = false;
@@ -1111,6 +1229,8 @@ function setupMermaidModal() {
         activeSvg = null;
         activeCanvas = null;
         activeViewport = null;
+        activeDiagramId = '';
+        activeDiagramTitle = '';
         baseSvgWidth = 0;
         baseSvgHeight = 0;
         zoom = 1;
@@ -1277,6 +1397,9 @@ function setupMermaidModal() {
             target.closest('.service-card')?.querySelector('.card-title')?.textContent?.trim() ||
             target.closest('.hero-panel')?.querySelector('.panel-title')?.textContent?.trim() ||
             'Mermaid Diagram';
+        const diagramId = target.querySelector('.mermaid')?.getAttribute('data-mermaid-id') || 'unknown_diagram';
+        activeDiagramId = diagramId;
+        activeDiagramTitle = titleText;
         modalTitle.textContent = titleText;
 
         modal.classList.add('is-open');
@@ -1285,11 +1408,17 @@ function setupMermaidModal() {
         scheduleCenterModalView();
 
         // GA4 Event Tracking
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            event: 'open_modal',
+        trackSelectContent({
+            contentType: 'mermaid_diagram',
+            itemId: diagramId,
+            itemName: titleText,
+            sectionName: 'mermaid_modal',
+            interactionAction: 'open_modal',
+            elementType: 'modal',
+            elementLabel: titleText,
+            modalName: 'mermaid-modal',
             modal_title: titleText,
-            has_video: !!videoId
+            has_video: Boolean(videoId)
         });
     };
 
@@ -1307,15 +1436,35 @@ function setupMermaidModal() {
             if (action === 'in') {
                 setZoom(zoom + ZOOM_STEP);
                 // GA4 Event Tracking
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'in' });
+                trackSelectContent({
+                    contentType: 'mermaid_zoom',
+                    itemId: activeDiagramId || 'unknown_diagram',
+                    itemName: activeDiagramTitle || 'Mermaid Diagram',
+                    sectionName: 'mermaid_modal',
+                    interactionAction: 'zoom_in',
+                    elementType: 'control',
+                    elementLabel: 'ZOOM_IN',
+                    modalName: 'mermaid-modal',
+                    zoom_action: 'in',
+                    value: Math.round(zoom * 100)
+                });
                 return;
             }
             if (action === 'out') {
                 setZoom(zoom - ZOOM_STEP);
                 // GA4 Event Tracking
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'out' });
+                trackSelectContent({
+                    contentType: 'mermaid_zoom',
+                    itemId: activeDiagramId || 'unknown_diagram',
+                    itemName: activeDiagramTitle || 'Mermaid Diagram',
+                    sectionName: 'mermaid_modal',
+                    interactionAction: 'zoom_out',
+                    elementType: 'control',
+                    elementLabel: 'ZOOM_OUT',
+                    modalName: 'mermaid-modal',
+                    zoom_action: 'out',
+                    value: Math.round(zoom * 100)
+                });
                 return;
             }
             zoom = 1;
@@ -1323,8 +1472,18 @@ function setupMermaidModal() {
             scheduleCenterModalView();
 
             // GA4 Event Tracking
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'zoom_diagram', zoom_action: 'reset' });
+            trackSelectContent({
+                contentType: 'mermaid_zoom',
+                itemId: activeDiagramId || 'unknown_diagram',
+                itemName: activeDiagramTitle || 'Mermaid Diagram',
+                sectionName: 'mermaid_modal',
+                interactionAction: 'zoom_reset',
+                elementType: 'control',
+                elementLabel: 'ZOOM_RESET',
+                modalName: 'mermaid-modal',
+                zoom_action: 'reset',
+                value: 100
+            });
         });
     });
 
