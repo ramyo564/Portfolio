@@ -97,7 +97,7 @@ export const templateConfig = {
                             anchorId: 'ln-featured',
                             cardClass: 'project-featured',
                             title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스',
-                            youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
+                            // youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
                             overview: '결과: 인증/권한 쿼리 21->3, timeout 15%->0%, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
                             stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
