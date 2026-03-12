@@ -25,11 +25,11 @@ export const templateConfig = {
             { label: 'WRITE RPS', value: '373 -> 916', delta: '+146%' }
         ],
         quickLinks: [
-            { label: 'FEATURED_L_N', href: '#ln-featured', variant: 'primary' },
-            { label: 'SYSTEM_ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'secondary' },
-            { label: 'CASE_1~6_EVIDENCE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'ghost' }
+            { label: 'FEATURED_PROJECT', href: '#ln-featured', variant: 'primary' },
+            { label: 'ARCHITECTURE_PAGE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'secondary' },
+            { label: 'CASE_STUDY_PAGE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'ghost' }
         ],
-        statNote: '최신 동기화: 2026-03-02 · 기준: L_N_Project-portfolio Case 1~6 · k6/Grafana 실측 증거',
+        statNote: '최신 반영: 2026-03-02 · 기준: Life Navigation case study · k6/Grafana 실측 증거',
         diagramNotes: [
             '프로젝트 간 관계 지도는 버튼으로 계층화해 확인할 수 있습니다.',
             'ARCHITECTURE Page에서는 아키텍처 설명과 구성 이유를 확인할 수 있습니다.',
@@ -58,9 +58,9 @@ export const templateConfig = {
             diagramId: 'release-timeline-map',
             navLabel: 'TIMELINE',
             metrics: [
-                '2023: Upgrade_Django4로 인증/결제/운영 배포 흐름을 단독 구축했습니다.',
-                '2024: Hoops와 realtime_auction에서 팀 기반 실시간 서비스 운영 경험을 확장했습니다.',
-                '2025.09~2026.03: L_N_Project Case 1~6을 문제-원인-해결-결과 구조로 재정리하고 증거를 표준화했습니다.'
+                '2023: Django Commerce로 인증/결제/운영 배포 흐름을 단독 구축했습니다.',
+                '2024: Hoops와 Realtime Auction에서 팀 기반 실시간 서비스 운영 경험을 확장했습니다.',
+                '2025.09~현재: Life Navigation을 문제-원인-해결-결과 구조로 고도화하고 증거를 표준화했습니다.'
             ]
         }
     ],
@@ -96,9 +96,9 @@ export const templateConfig = {
                             mermaidId: 'ln-project-architecture',
                             anchorId: 'ln-featured',
                             cardClass: 'project-featured',
-                            title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스 (Upgrade Todo)',
+                            title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스',
                             youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
-                            subtitle: '개인 · 2025.09 - 2026.03(최신 동기화 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
+                            subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
                             overview: '결과: 인증/권한 쿼리 21->3, timeout 15%->0%, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
                             stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
                             skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
@@ -112,9 +112,9 @@ export const templateConfig = {
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'primary' },
-                                { label: 'CASE_STUDY (1~6)', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'secondary' },
-                                { label: 'CASE_6_SYNC_2026-03-02', href: 'https://ramyo564.github.io/L_N_Project-portfolio/case6/CASE-6.md', variant: 'ghost' },
-                                { label: 'GITHUB', href: 'https://github.com/ramyo564/L_N_Project', variant: 'ghost' }
+                                { label: 'CASE_STUDY', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'secondary' },
+                                { label: 'LATEST_DEEP_DIVE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/case6/CASE-6.md', variant: 'ghost' },
+                                { label: 'GITHUB_REPO', href: 'https://github.com/ramyo564/L_N_Project', variant: 'ghost' }
                             ]
                         },
                         {
@@ -138,7 +138,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
-                            title: '경매 도메인의 동시성/결제 정합성을 강화한 팀 서비스 (realtime_auction)',
+                            title: '경매 도메인의 동시성/결제 정합성을 강화한 팀 서비스 (Realtime Auction)',
                             subtitle: '팀(BE 4) · 2023.09 - 2024.11 · 역할: 결제 흐름/검색 모델링 최적화 + API 안정화',
                             overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
                             stackSummary: 'Django, DRF, Channels, Celery, Redis, KakaoPay API, django-mptt, JWT',
@@ -156,7 +156,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
-                            title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 개인 서비스 (Upgrade_Django4)',
+                            title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 개인 서비스 (Django Commerce)',
                             subtitle: '개인 · 2023.05 - 2023.06 · 역할: 기획 -> 구현 -> 배포 단독 수행',
                             overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
                             stackSummary: 'Django 4.2, PostgreSQL, PayPal, KakaoPay, AWS EB, S3, Route53',

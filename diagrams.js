@@ -1,10 +1,10 @@
 export const diagrams = {
     'portfolio-hub-map': `
         graph TD
-        Hub[Portfolio Hub] --> LN[L_N_Project]
+        Hub[Portfolio Hub] --> LN[Life Navigation]
         Hub --> Hoops[Hoops]
-        Hub --> RA[realtime_auction]
-        Hub --> UD[Upgrade_Django4]
+        Hub --> RA[Realtime Auction]
+        Hub --> UD[Django Commerce]
 
         LN --> LNA[Architecture Page]
         LN --> LNC[Case Study Page]
@@ -33,20 +33,20 @@ export const diagrams = {
         Root --> C[Cache and Transaction]
         Root --> D[Deployment and Cost]
 
-        M --> LN_M[L_N_Project]
+        M --> LN_M[Life Navigation]
         M --> HT_M[Hoops]
-        M --> RA_M[realtime_auction]
+        M --> RA_M[Realtime Auction]
 
-        I --> LN_I[L_N_Project]
-        I --> UD_I[Upgrade_Django4]
+        I --> LN_I[Life Navigation]
+        I --> UD_I[Django Commerce]
 
-        C --> LN_C[L_N_Project]
-        C --> RA_C[realtime_auction]
-        C --> UD_C[Upgrade_Django4]
+        C --> LN_C[Life Navigation]
+        C --> RA_C[Realtime Auction]
+        C --> UD_C[Django Commerce]
 
         D --> HT_D[Hoops]
-        D --> UD_D[Upgrade_Django4]
-        D --> LN_D[L_N_Project]
+        D --> UD_D[Django Commerce]
+        D --> LN_D[Life Navigation]
 
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
         classDef g fill:#161b22,stroke:#238636,color:#c9d1d9
@@ -58,13 +58,13 @@ export const diagrams = {
 
     'release-timeline-map': `
         graph LR
-        T2023[2023] --> UD[Upgrade_Django4]
+        T2023[2023] --> UD[Django Commerce]
         UD --> T2024A[2024 H1]
         T2024A --> Hoops[Hoops]
         Hoops --> T2024B[2024 H2]
-        T2024B --> RA[realtime_auction]
+        T2024B --> RA[Realtime Auction]
         RA --> T2025[2025 - NOW]
-        T2025 --> LN[L_N_Project]
+        T2025 --> LN[Life Navigation]
 
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
         classDef g fill:#161b22,stroke:#238636,color:#c9d1d9
