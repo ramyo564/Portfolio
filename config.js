@@ -37,7 +37,7 @@ export const templateConfig = {
         ],
         metrics: [
             '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 인증/권한 쿼리 21 -> 3으로 축소.',
-            '30초 스캔 2) 통합 튜닝으로 write p95 1.9s -> 126ms, timeout 15% -> 0%.',
+            '30초 스캔 2) Case 5: 비동기 발행 분리로 http_req_failed.rate 0.93% -> 0%, p95 488ms -> 124ms.',
             '30초 스캔 3) 통합 튜닝으로 read RPS 972 -> 3680, write RPS 373 -> 916, read p95 975ms -> 141ms (2026-03-02 기준).'
         ]
     },
@@ -99,15 +99,15 @@ export const templateConfig = {
                             title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스',
                             // youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
-                            overview: '결과: 인증/권한 쿼리 21->3, timeout 15%->0%, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
+                            overview: '결과: 인증/권한 쿼리 21->3, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
                             stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
                             skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
                             highlights: [
                                 'Case 1: 회원가입 동기 200 -> 비동기 202(+X-User-Id), Outbox 큐잉으로 영속/메시징 경계 분리',
                                 'Case 2: 인증/권한 쿼리 21->3 (JWT Claims + AOP Gate)',
                                 'Case 3: idle in transaction 수십~수백 row -> 0 row, 생성 직후 조회 403 -> 200(Pending Cache)',
-                                'Case 4: Async Gap 보완으로 생성 직후 권한 오류율 5%->0%',
-                                'Case 5: Async Publisher 적용으로 timeout 15%->0%',
+                                'Case 4: VT + Redis Shared 설정 조합 재구성으로 req/s 442.77->804.68, failed rate 1.06%->0%',
+                                'Case 5: Async Publisher 적용으로 http_req_failed.rate 0.93%->0%, p95 488ms->124ms',
                                 'Case 6: 통합 튜닝으로 read RPS 972->3680, write RPS 373->916, read p95 975ms->141ms, write p95 1.9s->126ms'
                             ],
                             links: [
