@@ -18,7 +18,7 @@ export const templateConfig = {
             '설계 -> 구현 -> 부하테스트(k6) -> 관측(Grafana/로그) -> 배포/문서화까지 단독으로 끝까지 가져갑니다.'
         ],
         statCards: [
-            { label: 'AUTH QUERIES', value: '21 -> 3', delta: '-86%' },
+            { label: 'AUTH GATE', value: '3 -> 1', delta: '-67%' },
             { label: 'READ p95', value: '975ms -> 141ms', delta: '-86%' },
             { label: 'READ RPS', value: '972 -> 3680', delta: '+279%' },
             { label: 'WRITE p95', value: '1.9s -> 126ms', delta: '-93%' },
@@ -36,7 +36,7 @@ export const templateConfig = {
             'CASE_STUDY Page에서는 Case 1~6 문제 해결 흐름과 측정 증거를 확인할 수 있습니다.'
         ],
         metrics: [
-            '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 인증/권한 쿼리 21 -> 3으로 축소.',
+            '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 대표 단일 요청 기본 권한 게이트 3 -> 1로 축소.',
             '30초 스캔 2) Case 5: 비동기 발행 분리로 http_req_failed.rate 0.93% -> 0%, p95 488ms -> 124ms.',
             '30초 스캔 3) 통합 튜닝으로 read RPS 972 -> 3680, write RPS 373 -> 916, read p95 975ms -> 141ms (2026-03-02 기준).'
         ]
@@ -99,16 +99,13 @@ export const templateConfig = {
                             title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스',
                             // youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
-                            overview: '결과: 인증/권한 쿼리 21->3, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
+                            // overview: '결과: 대표 단일 요청 권한 게이트 3->1, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
                             stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
                             skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
                             highlights: [
-                                'Case 1: 회원가입 동기 200 -> 비동기 202(+X-User-Id), Outbox 큐잉으로 영속/메시징 경계 분리',
-                                'Case 2: 인증/권한 쿼리 21->3 (JWT Claims + AOP Gate)',
-                                'Case 3: idle in transaction 수십~수백 row -> 0 row, 생성 직후 조회 403 -> 200(Pending Cache)',
-                                'Case 4: VT + Redis Shared 설정 조합 재구성으로 req/s 442.77->804.68, failed rate 1.06%->0%',
-                                'Case 5: Async Publisher 적용으로 http_req_failed.rate 0.93%->0%, p95 488ms->124ms',
-                                'Case 6: 통합 튜닝으로 read RPS 972->3680, write RPS 373->916, read p95 975ms->141ms, write p95 1.9s->126ms'
+                                '인증 경로 최적화: 대표 요청 권한 게이트 3→1, 비동기 발행 전환으로 failed rate 0%',
+                                '통합 성능 최적화: 읽기 RPS 972→3,680, 쓰기 RPS 373→916 (500VU baseline)',
+                                '6건의 Case Study와 k6/Grafana 실측 증거 → CASE_STUDY 페이지에서 확인'
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'primary' },
@@ -121,7 +118,7 @@ export const templateConfig = {
                             mermaidId: 'hoops-architecture',
                             title: '실시간 매칭/알림과 운영 배포 흐름을 안정화한 팀 서비스 (Hoops)',
                             subtitle: '팀(BE 4 / FE 3) · 2024.04 - 2024.08 · 역할: 백엔드 설계/구현 + CI/CD 자동화',
-                            overview: '결과: 배포 15분+ 수동 -> 3분 이내 자동화, Docker 이미지 600MB -> 250MB, AWS 운영 비용 약 80% 절감',
+                            // overview: '결과: 배포 15분+ 수동 -> 3분 이내 자동화, Docker 이미지 600MB -> 250MB, AWS 운영 비용 약 80% 절감',
                             stackSummary: 'Spring Boot, WebSocket, SSE, MariaDB, Redis, Docker, GitHub Actions, AWS',
                             skills: ['Spring Boot', 'WebSocket', 'SSE', 'MariaDB', 'Redis', 'Docker', 'GitHub Actions', 'AWS'],
                             highlights: [
@@ -140,7 +137,7 @@ export const templateConfig = {
                             mermaidId: 'realtime-auction-architecture',
                             title: '경매 도메인의 동시성/결제 정합성을 강화한 팀 서비스 (Realtime Auction)',
                             subtitle: '팀(BE 4) · 2023.09 - 2024.11 · 역할: 결제 흐름/검색 모델링 최적화 + API 안정화',
-                            overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
+                            // overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
                             stackSummary: 'Django, DRF, Channels, Celery, Redis, KakaoPay API, django-mptt, JWT',
                             skills: ['Django', 'DRF', 'Channels', 'Celery', 'Redis', 'KakaoPay API', 'django-mptt', 'JWT'],
                             highlights: [
@@ -158,7 +155,7 @@ export const templateConfig = {
                             mermaidId: 'upgrade-django-architecture',
                             title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 개인 서비스 (Django Commerce)',
                             subtitle: '개인 · 2023.05 - 2023.06 · 역할: 기획 -> 구현 -> 배포 단독 수행',
-                            overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
+                            // overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
                             stackSummary: 'Django 4.2, PostgreSQL, PayPal, KakaoPay, AWS EB, S3, Route53',
                             skills: ['Django 4.2', 'PostgreSQL', 'PayPal', 'KakaoPay', 'AWS EB', 'S3', 'Route53'],
                             highlights: [
