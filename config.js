@@ -116,7 +116,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'hoops-architecture',
-                            title: '실시간 매칭/알림과 운영 배포 흐름을 안정화한 팀 서비스 (Hoops)',
+                            title: '실시간 매칭/알림 - 농구 소셜 플랫폼 서비스 (Hoops)',
                             subtitle: '팀(BE 4 / FE 3) · 2024.04 - 2024.08 · 역할: 백엔드 설계/구현 + CI/CD 자동화',
                             // overview: '결과: 배포 15분+ 수동 -> 3분 이내 자동화, Docker 이미지 600MB -> 250MB, AWS 운영 비용 약 80% 절감',
                             stackSummary: 'Spring Boot, WebSocket, SSE, MariaDB, Redis, Docker, GitHub Actions, AWS',
@@ -135,7 +135,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
-                            title: '경매 도메인의 동시성/결제 정합성을 강화한 팀 서비스 (Realtime Auction)',
+                            title: '동시성/결제 정합성을 강화한 - 경매 서비스 (Realtime Auction)',
                             subtitle: '팀(BE 4) · 2023.09 - 2024.11 · 역할: 결제 흐름/검색 모델링 최적화 + API 안정화',
                             // overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
                             stackSummary: 'Django, DRF, Channels, Celery, Redis, KakaoPay API, django-mptt, JWT',
@@ -153,7 +153,7 @@ export const templateConfig = {
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
-                            title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 개인 서비스 (Django Commerce)',
+                            title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 - 쇼핑몰 서비스 (Django Commerce)',
                             subtitle: '개인 · 2023.05 - 2023.06 · 역할: 기획 -> 구현 -> 배포 단독 수행',
                             // overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
                             stackSummary: 'Django 4.2, PostgreSQL, PayPal, KakaoPay, AWS EB, S3, Route53',

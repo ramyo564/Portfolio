@@ -63,7 +63,7 @@ export const diagrams = {
         T2024A --> Hoops[Hoops]
         Hoops --> T2024B[2024 H2]
         T2024B --> RA[Realtime Auction]
-        RA --> T2025[2025 - NOW]
+        RA --> T2025[2025 H3]
         T2025 --> LN[Life Navigation]
 
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
