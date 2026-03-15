@@ -27,13 +27,13 @@ export const templateConfig = {
         quickLinks: [
             { label: 'FEATURED_PROJECT', href: '#ln-featured', variant: 'primary' },
             { label: 'ARCHITECTURE_PAGE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'secondary' },
-            { label: 'CASE_STUDY_PAGE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'ghost' }
+            { label: 'PROBLEM_SOLVING_PAGE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'ghost' }
         ],
-        statNote: '최신 반영: 2026-03-02 · 기준: Life Navigation case study · k6/Grafana 실측 증거',
+        statNote: '최신 반영: 2026-03-02 · 기준: Life Navigation problem solving · k6/Grafana 실측 증거',
         diagramNotes: [
             '프로젝트 간 관계 지도는 버튼으로 계층화해 확인할 수 있습니다.',
             'ARCHITECTURE Page에서는 아키텍처 설명과 구성 이유를 확인할 수 있습니다.',
-            'CASE_STUDY Page에서는 Case 1~6 문제 해결 흐름과 측정 증거를 확인할 수 있습니다.'
+            'PROBLEM_SOLVING Page에서는 Case 1~6 문제 해결 흐름과 측정 증거를 확인할 수 있습니다.'
         ],
         metrics: [
             '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 대표 단일 요청 기본 권한 게이트 3 -> 1로 축소.',
@@ -87,6 +87,44 @@ export const templateConfig = {
             theme: 'blue',
             cardVisualHeight: '260px',
             cardClass: 'project-card',
+            recruiterBrief: {
+                kicker: 'RECRUITER_QUICK_BRIEF',
+                title: '30초 요약으로 먼저 보는 핵심 경험',
+                cases: [
+                    {
+                        id: 'Life Nav',
+                        anchorId: 'ln-featured',
+                        title: '성능 최적화 및 비동기 전환',
+                        problem: '고부하 시 응답 지연 및 에러율 상승',
+                        action: '인증 게이트 축소(3->1) 및 Outbox 기반 비동기 발행 분리',
+                        impact: '읽기 RPS 279%↑, 쓰기 p95 93%↓, 에러율 0%'
+                    },
+                    {
+                        id: 'Hoops',
+                        anchorId: 'hoops-featured',
+                        title: '운영 자동화 및 비용 절감',
+                        problem: '수동 배포(15분+) 및 높은 인프라 비용',
+                        action: 'CI/CD 파이프라인 구축 및 Docker 이미지 최적화',
+                        impact: '배포 3분 이내 단축, 운영 비용 80% 절감'
+                    },
+                    {
+                        id: 'Auction',
+                        anchorId: 'auction-featured',
+                        title: '동시성 제어 및 결제 안정화',
+                        problem: '입찰 경쟁 시 최고가 정합성 이슈 및 결제 누락 위험',
+                        action: 'Redis 기반 동시성 제어 및 결제 상태 전이 모델링',
+                        impact: '최고가 갱신 정합성 확보 및 결제 성공률 향상'
+                    },
+                    {
+                        id: 'Django Com',
+                        anchorId: 'django-featured',
+                        title: 'DB 마이그레이션 및 보안 강화',
+                        problem: '개발/운영 환경 DB 격차 및 어드민 보안 취약',
+                        action: 'JSON 기반 데이터 이전 전략 수립 및 허니팟/이메일 인증 도입',
+                        impact: '데이터 유실 Zero 이전 및 비정상 접근 시도 원천 차단'
+                    }
+                ]
+            },
             groups: [
                 {
                     title: 'ARCHITECTURE + PROBLEM SOLVING TRACK',
@@ -105,17 +143,18 @@ export const templateConfig = {
                             highlights: [
                                 '인증 경로 최적화: 대표 요청 권한 게이트 3→1, 비동기 발행 전환으로 failed rate 0%',
                                 '통합 성능 최적화: 읽기 RPS 972→3,680, 쓰기 RPS 373→916 (500VU baseline)',
-                                '6건의 Case Study와 k6/Grafana 실측 증거 → CASE_STUDY 페이지에서 확인'
+                                '6건의 Problem Solving과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/L_N_Project/', variant: 'primary' },
-                                { label: 'CASE_STUDY', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'secondary' },
+                                { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'secondary' },
                                 { label: 'LATEST_DEEP_DIVE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/case6/CASE-6.md', variant: 'ghost' },
                                 { label: 'GITHUB_REPO', href: 'https://github.com/ramyo564/L_N_Project', variant: 'ghost' }
                             ]
                         },
                         {
                             mermaidId: 'hoops-architecture',
+                            anchorId: 'hoops-featured',
                             title: '실시간 매칭/알림 - 농구 소셜 플랫폼 서비스 (Hoops)',
                             subtitle: '팀(BE 4 / FE 3) · 2024.04 - 2024.08 · 역할: 백엔드 설계/구현 + CI/CD 자동화',
                             // overview: '결과: 배포 15분+ 수동 -> 3분 이내 자동화, Docker 이미지 600MB -> 250MB, AWS 운영 비용 약 80% 절감',
@@ -128,13 +167,14 @@ export const templateConfig = {
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/Hoops/', variant: 'primary' },
-                                { label: 'CASE_STUDY', href: 'https://ramyo564.github.io/Hoops-portfolio/', variant: 'secondary' },
+                                { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/Hoops-portfolio/', variant: 'secondary' },
                                 { label: 'GITHUB', href: 'https://github.com/ramyo564/Hoops', variant: 'ghost' },
                                 { label: 'TEAM_REPO', href: 'https://github.com/hoops-project', variant: 'ghost' }
                             ]
                         },
                         {
                             mermaidId: 'realtime-auction-architecture',
+                            anchorId: 'auction-featured',
                             title: '동시성/결제 정합성을 강화한 - 경매 서비스 (Realtime Auction)',
                             subtitle: '팀(BE 4) · 2023.09 - 2024.11 · 역할: 결제 흐름/검색 모델링 최적화 + API 안정화',
                             // overview: '결과: 입찰 최고가 갱신 정합성 확보, 결제 ready/approval 만료 정리 흐름 구축, 검색/카테고리 운영성 개선',
@@ -147,12 +187,13 @@ export const templateConfig = {
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/realtime_auction/', variant: 'primary' },
-                                { label: 'CASE_STUDY', href: 'https://ramyo564.github.io/realtime_auction-portfolio/', variant: 'secondary' },
+                                { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/realtime_auction-portfolio/', variant: 'secondary' },
                                 { label: 'GITHUB', href: 'https://github.com/ramyo564/realtime_auction', variant: 'ghost' }
                             ]
                         },
                         {
                             mermaidId: 'upgrade-django-architecture',
+                            anchorId: 'django-featured',
                             title: '기능 구현부터 배포/마이그레이션까지 단독으로 완주한 - 쇼핑몰 서비스 (Django Commerce)',
                             subtitle: '개인 · 2023.05 - 2023.06 · 역할: 기획 -> 구현 -> 배포 단독 수행',
                             // overview: '결과: 세션 카트 병합/주문 완료 흐름 정리, SQLite -> PostgreSQL 데이터 마이그레이션, 이메일 인증 + honeypot 보안 적용',
@@ -165,7 +206,7 @@ export const templateConfig = {
                             ],
                             links: [
                                 { label: 'ARCHITECTURE', href: 'https://ramyo564.github.io/Upgrade_Django4/', variant: 'primary' },
-                                { label: 'CASE_STUDY', href: 'https://ramyo564.github.io/Upgrade_Django4-portfolio/', variant: 'secondary' },
+                                { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/Upgrade_Django4-portfolio/', variant: 'secondary' },
                                 { label: 'GITHUB', href: 'https://github.com/ramyo564/Upgrade_Django4', variant: 'ghost' }
                             ]
                         }

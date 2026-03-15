@@ -7,16 +7,16 @@ export const diagrams = {
         Hub --> UD[Django Commerce]
 
         LN --> LNA[Architecture Page]
-        LN --> LNC[Case Study Page]
+        LN --> LNC[Problem Solving Page]
 
         Hoops --> HA[Architecture Page]
-        Hoops --> HC[Case Study Page]
+        Hoops --> HC[Problem Solving Page]
 
         RA --> RAA[Architecture Page]
-        RA --> RAC[Case Study Page]
+        RA --> RAC[Problem Solving Page]
 
         UD --> UDA[Architecture Page]
-        UD --> UDC[Case Study Page]
+        UD --> UDC[Problem Solving Page]
 
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
         classDef g fill:#161b22,stroke:#238636,color:#c9d1d9

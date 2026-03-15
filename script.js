@@ -955,12 +955,227 @@ function createServiceCard(card, sectionConfig) {
     return article;
 }
 
+let caseShowcaseControllers = [];
+
+function createSectionRecruiterBrief(sectionConfig) {
+    const brief = sectionConfig?.recruiterBrief;
+    if (!brief || typeof brief !== 'object') {
+        return null;
+    }
+
+    const quickCases = Array.isArray(brief.cases)
+        ? brief.cases
+            .map((item) => ({
+                id: String(item?.id || '').trim(),
+                anchorId: String(item?.anchorId || '').trim(),
+                title: String(item?.title || '').trim(),
+                problem: String(item?.problem || '').trim(),
+                action: String(item?.action || '').trim(),
+                impact: String(item?.impact || '').trim()
+            }))
+            .filter((item) => item.id || item.title || item.problem || item.action || item.impact)
+        : [];
+
+    const bullets = Array.isArray(brief.bullets)
+        ? brief.bullets.map((line) => String(line || '').trim()).filter(Boolean)
+        : [];
+
+    if (!brief.title && bullets.length === 0 && quickCases.length === 0) {
+        return null;
+    }
+
+    const wrapper = document.createElement('section');
+    wrapper.className = 'section-recruiter-brief';
+
+    const kickerText = String(brief.kicker || '').trim();
+    if (kickerText) {
+        const kicker = document.createElement('p');
+        kicker.className = 'section-recruiter-kicker';
+        kicker.textContent = kickerText;
+        wrapper.appendChild(kicker);
+    }
+
+    const titleText = String(brief.title || '').trim();
+    if (titleText) {
+        const title = document.createElement('h3');
+        title.className = 'section-recruiter-title';
+        title.textContent = titleText;
+        wrapper.appendChild(title);
+    }
+
+    if (quickCases.length > 0) {
+        const cardGrid = document.createElement('div');
+        cardGrid.className = 'section-recruiter-card-grid';
+
+        quickCases.forEach((item) => {
+            const card = document.createElement('article');
+            card.className = 'section-recruiter-card';
+            if (item.anchorId) {
+                card.id = `brief-${item.anchorId.replace(/^#/, '')}`;
+            }
+
+            const header = document.createElement('div');
+            header.className = 'section-recruiter-card-header';
+            header.style.cursor = 'pointer';
+
+            const idLine = document.createElement('p');
+            idLine.className = 'section-recruiter-card-id';
+            idLine.textContent = item.id || 'Case';
+
+            const cardTitle = document.createElement('h4');
+            cardTitle.className = 'section-recruiter-card-title';
+            cardTitle.textContent = item.title || '핵심 변화';
+
+            header.append(idLine, cardTitle);
+
+            const toggleHint = document.createElement('div');
+            toggleHint.className = 'section-recruiter-card-toggle-hint';
+            toggleHint.textContent = 'DETAILS';
+            header.appendChild(toggleHint);
+
+            const details = document.createElement('div');
+            details.className = 'section-recruiter-card-details';
+
+            const createRow = (labelText, valueText) => {
+                if (!valueText) return null;
+                const row = document.createElement('div');
+                row.className = 'section-recruiter-card-row';
+                
+                const key = document.createElement('span');
+                key.className = 'section-recruiter-card-key';
+                key.textContent = labelText;
+
+                const val = document.createElement('span');
+                val.className = 'section-recruiter-card-value';
+                val.textContent = valueText;
+
+                row.append(key, val);
+                return row;
+            };
+
+            const problemRow = createRow('PROBLEM', item.problem);
+            const actionRow = createRow('ACTION', item.action);
+            const impactRow = createRow('IMPACT', item.impact);
+
+            if (problemRow) details.appendChild(problemRow);
+            if (actionRow) details.appendChild(actionRow);
+            if (impactRow) details.appendChild(impactRow);
+
+            if (item.anchorId) {
+                const gotoBtn = document.createElement('button');
+                gotoBtn.className = 'card-extra-btn';
+                gotoBtn.textContent = 'GO_TO_FULL_PROBLEM_SOLVING';
+                gotoBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const targetId = item.anchorId.replace(/^#/, '');
+                    revealHashTarget(targetId, 'recruiter_card_goto');
+                });
+                details.appendChild(gotoBtn);
+            }
+
+            card.append(header, details);
+
+            card.addEventListener('click', () => {
+                const isExpanded = card.classList.toggle('is-expanded');
+                trackSelectContent({
+                    contentType: 'recruiter_quick_brief_card',
+                    itemId: item.id || 'unknown_case',
+                    itemName: item.title || 'unknown_case',
+                    sectionName: 'recruiter_quick_brief',
+                    interactionAction: isExpanded ? 'expand' : 'collapse',
+                    elementType: 'article',
+                    elementLabel: item.id || 'unknown_case'
+                });
+            });
+
+            cardGrid.appendChild(card);
+        });
+
+        wrapper.appendChild(cardGrid);
+    }
+
+    if (bullets.length > 0 && quickCases.length === 0) {
+        const list = document.createElement('ul');
+        list.className = 'section-recruiter-list';
+        bullets.forEach((line) => {
+            const item = document.createElement('li');
+            item.textContent = line;
+            list.appendChild(item);
+        });
+        wrapper.appendChild(list);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'section-recruiter-actions';
+    wrapper.appendChild(actions);
+
+    return wrapper;
+}
+
+function ensureCaseCardVisible(targetId) {
+    const anchorId = String(targetId || '').replace(/^#/, '').trim();
+    if (!anchorId || caseShowcaseControllers.length === 0) {
+        return false;
+    }
+
+    let revealed = false;
+    caseShowcaseControllers.forEach((controller) => {
+        if (!controller || typeof controller.revealCase !== 'function') {
+            return;
+        }
+        if (controller.revealCase(anchorId, 'anchor_navigation')) {
+            revealed = true;
+        }
+    });
+    return revealed;
+}
+
+function revealHashTarget(hashValue, triggerSource = 'hash_navigation') {
+    const targetId = String(hashValue || '').replace(/^#/, '').trim();
+    if (!targetId) {
+        return;
+    }
+
+    ensureCaseCardVisible(targetId);
+
+    window.setTimeout(() => {
+        const target = byId(targetId) || byId(`brief-${targetId}`);
+        if (!target) {
+            return;
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        target.classList.remove('is-target-highlight');
+        void target.offsetWidth; // trigger reflow
+        target.classList.add('is-target-highlight');
+
+        // Also check if it's a recruiter card to expand it
+        if (target.classList.contains('section-recruiter-card')) {
+            target.classList.add('is-expanded');
+        }
+
+        const showcaseId = target.closest('.service-section')?.id || '';
+        trackSelectContent({
+            contentType: 'hash_target_reveal',
+            itemId: targetId,
+            itemName: target.querySelector('.card-title, .section-recruiter-card-title')?.textContent?.trim() || targetId,
+            sectionName: 'service_section',
+            interactionAction: 'reveal_target',
+            elementType: 'section',
+            elementLabel: 'HASH_TARGET_REVEAL',
+            trigger_source: triggerSource,
+            showcase_id: showcaseId
+        });
+    }, 100);
+}
+
 function renderServiceSections() {
     const container = byId('service-sections');
     if (!container) {
         return;
     }
     container.replaceChildren();
+    caseShowcaseControllers = [];
 
     const sections = Array.isArray(templateConfig.serviceSections) ? templateConfig.serviceSections : [];
     sections.forEach((sectionConfig) => {
@@ -975,25 +1190,116 @@ function renderServiceSections() {
         heading.textContent = sectionConfig.title ?? 'SERVICES';
         header.appendChild(heading);
 
-        const grid = document.createElement('div');
-        grid.className = 'service-grid';
+        const recruiterBrief = createSectionRecruiterBrief(sectionConfig);
+
+        const groupsContainer = document.createElement('div');
+        groupsContainer.className = 'service-groups';
+
+        const renderedCards = [];
+        const groupCardMap = new Map();
 
         const groups = Array.isArray(sectionConfig.groups) && sectionConfig.groups.length > 0
             ? sectionConfig.groups
             : [{ title: '', desc: '', cards: sectionConfig.cards ?? [] }];
 
         groups.forEach((group) => {
+            const groupSection = document.createElement('div');
+            groupSection.className = 'service-group';
+
             if (group.title || group.desc) {
-                grid.appendChild(createGroupDivider(group, sectionConfig.theme));
+                groupSection.appendChild(createGroupDivider(group, sectionConfig.theme));
             }
+
+            const groupGrid = document.createElement('div');
+            groupGrid.className = 'service-grid';
 
             const cards = Array.isArray(group.cards) ? group.cards : [];
             cards.forEach((card) => {
-                grid.appendChild(createServiceCard(card, sectionConfig));
+                const cardElement = createServiceCard(card, sectionConfig);
+                groupGrid.appendChild(cardElement);
+
+                const anchorId = String(card?.anchorId || cardElement.id || '').trim();
+                renderedCards.push({ anchorId, element: cardElement, groupSection });
+
+                if (!groupCardMap.has(groupSection)) {
+                    groupCardMap.set(groupSection, []);
+                }
+                groupCardMap.get(groupSection).push(cardElement);
             });
+
+            groupSection.appendChild(groupGrid);
+            groupsContainer.appendChild(groupSection);
         });
 
-        sectionWrapper.append(header, grid);
+        // Collapse logic if many cases
+        const featuredCount = Number.parseInt(sectionConfig.featuredCaseCount, 10) || 0;
+        const featuredAnchors = Array.isArray(sectionConfig.featuredCaseAnchors) ? sectionConfig.featuredCaseAnchors : [];
+        const featuredSet = new Set(featuredAnchors);
+        const canCollapse = featuredCount > 0 || featuredSet.size > 0;
+
+        if (canCollapse && renderedCards.length > (featuredCount || featuredSet.size)) {
+            const controls = document.createElement('div');
+            controls.className = 'case-showcase-controls';
+            controls.style.marginTop = '1rem';
+            controls.style.padding = '0.5rem';
+            controls.style.border = '1px dashed var(--border-color)';
+            controls.style.borderRadius = '8px';
+            controls.style.display = 'flex';
+            controls.style.justifyContent = 'space-between';
+            controls.style.alignItems = 'center';
+
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'case-showcase-toggle';
+            toggleButton.style.padding = '0.4rem 0.8rem';
+            toggleButton.style.background = 'rgba(88, 166, 255, 0.1)';
+            toggleButton.style.border = '1px solid var(--accent-blue)';
+            toggleButton.style.color = 'var(--accent-blue)';
+            toggleButton.style.borderRadius = '4px';
+            toggleButton.style.cursor = 'pointer';
+
+            let isCollapsed = true;
+
+            const applyVisibility = () => {
+                renderedCards.forEach((entry) => {
+                    const isVisible = !isCollapsed || (featuredSet.size > 0 ? featuredSet.has(entry.anchorId) : renderedCards.indexOf(entry) < featuredCount);
+                    entry.element.hidden = !isVisible;
+                });
+                toggleButton.textContent = isCollapsed ? 'SHOW ALL CASES' : 'SHOW FEATURED ONLY';
+            };
+
+            toggleButton.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                applyVisibility();
+            });
+
+            controls.appendChild(document.createTextNode('CASE SHOWCASE CONTROLS'));
+            controls.appendChild(toggleButton);
+            
+            if (recruiterBrief) {
+                const briefActions = recruiterBrief.querySelector('.section-recruiter-actions');
+                if (briefActions) briefActions.appendChild(controls);
+            } else {
+                header.appendChild(controls);
+            }
+
+            applyVisibility();
+
+            caseShowcaseControllers.push({
+                sectionId: sectionConfig.id || '',
+                revealCase(anchorId) {
+                    if (renderedCards.some(e => e.anchorId === anchorId)) {
+                        isCollapsed = false;
+                        applyVisibility();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
+
+        sectionWrapper.append(header);
+        if (recruiterBrief) sectionWrapper.appendChild(recruiterBrief);
+        sectionWrapper.appendChild(groupsContainer);
         container.appendChild(sectionWrapper);
     });
 }
@@ -1796,4 +2102,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     setupMermaidModal();
     setupScrollSpy();
+
+    // Initial hash handling
+    if (window.location.hash) {
+        revealHashTarget(window.location.hash, 'initial_hash');
+    }
+
+    // Hash change listener
+    window.addEventListener('hashchange', () => {
+        revealHashTarget(window.location.hash, 'hash_change');
+    });
 });
