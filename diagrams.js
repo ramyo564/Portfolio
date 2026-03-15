@@ -101,7 +101,7 @@ export const diagrams = {
 
     'hoops-architecture': `
         graph LR
-        Users[Web and Mobile User] --> API[Spring Boot API]
+        Users[Web Client] --> API[Spring Boot API]
         API --> Security[Spring Security and JWT]
 
         Security --> UsersDomain[Users and Auth]
@@ -155,7 +155,7 @@ export const diagrams = {
 
     'upgrade-django-architecture': `
         graph LR
-        User[Client Browser] --> Route53[Route53]
+        User[Web Client] --> Route53[Route53]
         Route53 --> EB[AWS Elastic Beanstalk]
 
         EB --> Nginx[Nginx]

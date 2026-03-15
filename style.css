@@ -715,8 +715,9 @@ body.modal-open {
     grid-column: 1 / -1;
 }
 
-.service-card.project-featured .card-title {
-    white-space: pre-line;
+.service-card.project-featured .mermaid svg {
+    max-height: 85%;
+    max-width: 90%;
 }
 
 @media (min-width: 1201px) {
