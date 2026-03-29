@@ -125,7 +125,7 @@ export const templateConfig = {
                             highlights: [
                                 '인증 경로 최적화: 대표 요청 권한 게이트 3→1, 비동기 발행 전환으로 failed rate 0%',
                                 '통합 성능 최적화: 읽기 RPS 1.55k→3.68k, 쓰기 RPS 203.7→915.7 (500VU baseline)',
-                                '6건의 Problem Solving과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
+                                '6건의 Problem Solving(Case A,B,C 압축)과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
                             ],
                             links: [
                                 { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'primary' }
