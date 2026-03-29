@@ -19,10 +19,10 @@ export const templateConfig = {
         ],
         statCards: [
             { label: 'AUTH GATE', value: '3 -> 1', delta: '-67%' },
-            { label: 'READ p95', value: '975ms -> 141ms', delta: '-86%' },
-            { label: 'READ RPS', value: '972 -> 3680', delta: '+279%' },
-            { label: 'WRITE p95', value: '1.9s -> 126ms', delta: '-93%' },
-            { label: 'WRITE RPS', value: '373 -> 916', delta: '+146%' }
+            { label: 'READ p95', value: '712ms -> 141ms', delta: '-80%' },
+            { label: 'READ RPS', value: '1.55k -> 3.68k', delta: '+137%' },
+            { label: 'WRITE p95', value: '3.4s -> 126ms', delta: '-96%' },
+            { label: 'WRITE RPS', value: '203.7 -> 915.7', delta: '+350%' }
         ],
         quickLinks: [
             { label: 'PROBLEM_SOLVING_PAGE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'primary' }
@@ -35,7 +35,7 @@ export const templateConfig = {
         metrics: [
             '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 대표 단일 요청 기본 권한 게이트 3 -> 1로 축소.',
             '30초 스캔 2) Case 5: 비동기 발행 분리로 http_req_failed.rate 0.93% -> 0%, p95 488ms -> 124ms.',
-            '30초 스캔 3) 통합 튜닝으로 read RPS 972 -> 3680, write RPS 373 -> 916, read p95 975ms -> 141ms (2026-03-02 기준).'
+            '30초 스캔 3) 통합 튜닝으로 read RPS 1.55k -> 3.68k, write RPS 203.7 -> 915.7, read p95 712ms -> 141ms (2026-03-02 기준).'
         ]
     },
 
@@ -94,7 +94,7 @@ export const templateConfig = {
                         title: '성능 최적화 및 비동기 전환',
                         problem: '고부하 시 응답 지연 및 에러율 상승',
                         action: '인증 게이트 축소(3->1) 및 Outbox 기반 비동기 발행 분리',
-                        impact: '읽기 RPS 279%↑, 쓰기 p95 93%↓, 에러율 0%'
+                        impact: '읽기 RPS 137%↑, 쓰기 p95 96%↓, 에러율 0%'
                     },
                     {
                         id: 'Hoops',
@@ -119,12 +119,12 @@ export const templateConfig = {
                             title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스 (Life Navigation)',
                             // youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
                             subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
-                            // overview: '결과: 대표 단일 요청 권한 게이트 3->1, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 373->916, write p95 1.9s->126ms, read RPS 972->3680, read p95 975ms->141ms',
+                            // overview: '결과: 대표 단일 요청 권한 게이트 3->1, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 203.7->915.7, write p95 3.4s->126ms, read RPS 1.55k->3.68k, read p95 712ms->141ms',
                             stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
                             skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
                             highlights: [
                                 '인증 경로 최적화: 대표 요청 권한 게이트 3→1, 비동기 발행 전환으로 failed rate 0%',
-                                '통합 성능 최적화: 읽기 RPS 972→3,680, 쓰기 RPS 373→916 (500VU baseline)',
+                                '통합 성능 최적화: 읽기 RPS 1.55k→3.68k, 쓰기 RPS 203.7→915.7 (500VU baseline)',
                                 '6건의 Problem Solving과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
                             ],
                             links: [
