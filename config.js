@@ -11,11 +11,12 @@ export const templateConfig = {
         panelTitle: 'PORTFOLIO_HUB_OVERVIEW',
         panelUid: 'ID: HUB-01',
         diagramId: 'portfolio-hub-map',
-        intro: '재현 가능한 성능 개선과 운영 자동화를 증거 기반으로 설명하는 백엔드 개발자',
+        intro: '외부 LLM API 연동, AI 로직 격리, 대규모 트래픽 최적화를 증거 기반으로 설명하는 백엔드 개발자',
         profileSummaryLines: [
-            '실패한 TODO/업무 관리 패턴을 성능, 도메인 규칙, 운영 자동화 관점에서 다시 설계합니다.',
-            'Spring Boot, FastAPI, RabbitMQ, Redis 기반으로 대량 읽기/쓰기 트래픽과 비동기 흐름을 튜닝했습니다.',
-            '설계 -> 구현 -> 부하테스트(k6) -> 관측(Grafana/로그) -> 배포/문서화까지 단독으로 끝까지 가져갑니다.'
+            '외부 LLM API를 연동하여 사용자의 행동 데이터를 분석하고 맞춤형 실행 계획을 생성하는 에이전트형 워크플로우를 설계합니다.',
+            'AI 추론 로직(FastAPI)과 비즈니스 코어(Spring Boot)를 물리적으로 격리해 LLM 응답 지연이 코어 서비스로 전파되는 것을 차단하는 아키텍처를 설계합니다.',
+            '1,000VU 이상 부하 테스트에서 가상 스레드 피닝(Pinning)과 DB 커넥션 고갈 문제를 Grafana/k6로 추적하고, 비동기 발행과 DB 경로 최적화, 커넥션/트랜잭션 튜닝으로 병목을 해소합니다.',
+            'AI 도구를 활용해 개발 생산성과 문제 해결 속도를 속도를 높이는 데 익숙합니다.'
         ],
         statCards: [
             { label: 'AUTH GATE', value: '3 -> 1', delta: '-67%' },
@@ -27,15 +28,16 @@ export const templateConfig = {
         quickLinks: [
             { label: 'PROBLEM_SOLVING_PAGE', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'primary' }
         ],
-        statNote: '최신 반영: 2026-03-02 · 기준: Life Navigation problem solving · k6/Grafana 실측 증거',
+        statNote: '최신 반영: 2026-03-29 · 기준: Life Navigation · k6/Grafana 실측 증거',
         diagramNotes: [
             '프로젝트 간 관계 지도는 버튼으로 계층화해 확인할 수 있습니다.',
-            'PROBLEM_SOLVING Page에서는 Case 1~6 문제 해결 흐름과 측정 증거를 확인할 수 있습니다.'
+            'PROBLEM_SOLVING Page에서는 Life Navigation의 AI 추천 워크플로우, AI 로직 격리, 대규모 트래픽 병목 해소를 k6/Grafana 실측 증거와 함께 확인할 수 있습니다.'
         ],
         metrics: [
-            '30초 스캔 1) Case 2: JWT Claims + AOP 권한 게이트로 대표 단일 요청 기본 권한 게이트 3 -> 1로 축소.',
-            '30초 스캔 2) Case 5: 비동기 발행 분리로 http_req_failed.rate 0.93% -> 0%, p95 488ms -> 124ms.',
-            '30초 스캔 3) 통합 튜닝으로 read RPS 1.55k -> 3.68k, write RPS 203.7 -> 915.7, read p95 712ms -> 141ms (2026-03-02 기준).'
+            '30초 스캔 1) Life Navigation: 외부 LLM API와 FastAPI AI 워커로 실패한 TODO를 다음 실행 계획으로 재구성.',
+            '30초 스캔 2) Case 2: JWT Claims + AOP 권한 게이트로 대표 단일 요청 기본 권한 게이트 3 -> 1로 축소.',
+            '30초 스캔 3) Case 5: 비동기 발행 분리로 http_req_failed.rate 0.93% -> 0%, p95 488ms -> 124ms.',
+            '30초 스캔 4) 통합 튜닝으로 read RPS 1.55k -> 3.68k, write RPS 203.7 -> 915.7, read p95 712ms -> 141ms (2026-03-02 기준).'
         ]
     },
 
@@ -55,7 +57,7 @@ export const templateConfig = {
             diagramId: 'release-timeline-map',
             navLabel: 'TIMELINE',
             metrics: [
-                '2025.09 - 현재 | Life Navigation을 문제-원인-해결-결과 구조로 고도화하고 성능/비동기 증거를 표준화',
+                '2025.09 - 현재 | Life Navigation을 AI 추천 워크플로우와 성능/비동기 증거 구조로 고도화',
                 '2024.05 - 2024.08 | Hoops에서 실시간 매칭/알림 팀 기반 서비스 구현 및 CI/CD 자동화',
                 '2023.05 - 2024.01 | Python, Django 기반 상거래 및 실시간 경매 플랫폼 개발'
             ]
@@ -91,10 +93,10 @@ export const templateConfig = {
                     {
                         id: 'Life Nav',
                         anchorId: 'ln-featured',
-                        title: '성능 최적화 및 비동기 전환',
-                        problem: '고부하 시 응답 지연 및 에러율 상승',
-                        action: '인증 게이트 축소(3->1) 및 Outbox 기반 비동기 발행 분리',
-                        impact: '읽기 RPS 137%↑, 쓰기 p95 96%↓, 에러율 0%'
+                        title: 'LLM API 연동 및 지능형 AI 추천 워크플로우',
+                        problem: '실패한 TODO 재구성과 고부하 응답 병목이 동시에 존재',
+                        action: 'FastAPI AI 워커 분리, 인증 게이트 축소(3->1), Outbox 기반 비동기 발행',
+                        impact: 'AI 추천 흐름 안정화, 읽기 RPS 137%↑, 쓰기 p95 96%↓, 에러율 0%'
                     },
                     {
                         id: 'Hoops',
@@ -116,16 +118,16 @@ export const templateConfig = {
                             anchorId: 'ln-featured',
                             cardClass: 'project-featured',
                             cardVisualHeight: '280px',
-                            title: '실패한 TODO/업무 습관을 분석해 다음 실행 계획으로 재구성하는 AI 서비스 (Life Navigation)',
+                            title: 'LLM API 연동 및 지능형 AI 추천 워크플로우로 실패한 TODO를 다음 실행 계획으로 재구성하는 서비스 (Life Navigation)',
                             // youtubeUrl: 'https://www.youtube.com/watch?v=TD6FPndjhoE',
-                            subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + 운영 자동화/증거 문서화',
+                            subtitle: 'Life Navigation · 개인 · 2025.09 - 진행 중(최신 반영 2026-03-02) · 역할: 백엔드 중심(성능/트랜잭션/비동기) + AI 워커/운영 자동화/증거 문서화',
                             // overview: '결과: 대표 단일 요청 권한 게이트 3->1, Case5 failed rate 0.93%->0%·p95 488ms->124ms, write RPS 203.7->915.7, write p95 3.4s->126ms, read RPS 1.55k->3.68k, read p95 712ms->141ms',
-                            stackSummary: 'Spring Boot, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
-                            skills: ['Spring Boot', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
+                            stackSummary: 'Spring Boot, FastAPI, LLM, PostgreSQL, Redis, RabbitMQ, Flyway, k6',
+                            skills: ['Spring Boot', 'FastAPI', 'LLM', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Flyway', 'k6'],
                             highlights: [
-                                '인증 경로 최적화: 대표 요청 권한 게이트 3→1, 비동기 발행 전환으로 failed rate 0%',
-                                '통합 성능 최적화: 읽기 RPS 1.55k→3.68k, 쓰기 RPS 203.7→915.7 (500VU baseline)',
-                                '6건의 Problem Solving(Case A,B,C 압축)과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
+                                'AI 추천 워크플로우: 외부 LLM API와 FastAPI 기반 추천 흐름으로 실패한 TODO/업무 습관 재구성',
+                                '통합 성능 최적화: 읽기 RPS 1.55k→3.68k, 쓰기 RPS 203.7→915.7 (초기 테스트 500VU)',
+                                'Problem Solving 과 k6/Grafana 실측 증거 → PROBLEM_SOLVING 페이지에서 확인'
                             ],
                             links: [
                                 { label: 'PROBLEM_SOLVING', href: 'https://ramyo564.github.io/L_N_Project-portfolio/', variant: 'primary' }

@@ -382,7 +382,8 @@ body.modal-open {
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 0.65rem;
 }
 
 #hub-overview .hero-diagram-notes {
@@ -403,6 +404,31 @@ body.modal-open {
 #hub-overview .hero-diagram-notes li::before {
     content: "> ";
     color: var(--accent-green);
+}
+
+#hub-overview .hero-intro {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#hub-overview .hero-profile-summary {
+    padding: 0.78rem 0.88rem;
+    gap: 0.42rem;
+    background: rgba(8, 14, 22, 0.78);
+    border-color: rgba(88, 166, 255, 0.16);
+}
+
+#hub-overview .hero-profile-summary li {
+    font-size: 0.84rem;
+    line-height: 1.58;
+    letter-spacing: 0.01em;
+    text-wrap: pretty;
+}
+
+#hub-overview .hero-profile-summary li::before {
+    font-weight: 700;
 }
 
 .panel {
