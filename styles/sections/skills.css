@@ -1,0 +1,27 @@
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.skill-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.9rem;
+    min-height: 108px;
+}
+
+.skill-card-title {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.skill-card-stack {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}

@@ -1,0 +1,47 @@
+.target-highlight {
+    animation: highlightFade 2s ease-out forwards;
+}
+
+@keyframes highlightFade {
+    0% {
+        background-color: rgba(88, 166, 255, 0.35);
+        box-shadow: 0 0 20px rgba(88, 166, 255, 0.25);
+    }
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+/* Highlight Animation */
+@keyframes target-highlight-pulse {
+    0% { background-color: rgba(88, 166, 255, 0.5); box-shadow: 0 0 0 6px rgba(88, 166, 255, 0.3); }
+    50% { background-color: rgba(88, 166, 255, 0.2); box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15); }
+    100% { background-color: transparent; box-shadow: none; }
+}
+.is-target-highlight {
+    animation: target-highlight-pulse 2s ease-out forwards !important;
+    scroll-margin-top: 100px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body.modal-open {
+    overflow: hidden;
+}

@@ -1,0 +1,129 @@
+.grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 46px 46px;
+    opacity: 0.05;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.status-bar {
+    height: 50px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0 1.25rem;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 8px var(--accent-green);
+}
+
+.system-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+}
+
+.dashboard-grid {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.top-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+}
+
+.panel-title {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.panel-uid {
+    color: var(--text-secondary);
+}
+
+.hero-panel {
+    gap: 0.9rem;
+}
+
+.graph-container {
+    position: relative;
+    width: 100%;
+    height: clamp(320px, 42vw, 540px);
+    padding: 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#intro .graph-container {
+    height: clamp(250px, 31vw, 380px);
+    padding: 0.55rem;
+}
+
+#intro .mermaid svg {
+    max-height: 94%;
+}
+
+#project-timeline .graph-container,
+#project-timeline .graph-container .mermaid {
+    overflow: visible;
+}
+
+#project-timeline .graph-container:hover .mermaid svg {
+    transform: none;
+}

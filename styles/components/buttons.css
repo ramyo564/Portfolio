@@ -1,0 +1,24 @@
+/* Unified Button Design */
+.card-extra-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--accent-blue);
+    border-radius: 4px;
+    color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.1);
+    font-family: var(--font-code);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.8rem;
+}
+
+.card-extra-btn:hover {
+    color: #ffffff;
+    background: var(--accent-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+}

@@ -1,0 +1,33 @@
+.contact-panel {
+    border-style: dashed;
+    text-align: center;
+}
+
+.contact-content p {
+    margin-bottom: 1.6rem;
+    color: var(--text-secondary);
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    text-decoration: none;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.65rem 1rem;
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.action-btn:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
