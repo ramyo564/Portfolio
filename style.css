@@ -1,13 +1,3 @@
-@import './styles/tokens.css';
-@import './styles/base.css';
-@import './styles/layout.css';
-@import './styles/components/navigation.css';
-@import './styles/components/buttons.css';
-@import './styles/sections/recruiter-brief.css';
-@import './styles/sections/hero.css';
-@import './styles/sections/skills.css';
-@import './styles/sections/services.css';
-@import './styles/components/cards.css';
-@import './styles/sections/contact.css';
-@import './styles/components/mermaid-modal.css';
-@import './styles/responsive.css';
+@charset "UTF-8";
+@import "./styles/core/tokens.css";
+@import "./styles/core/minimal.css";
