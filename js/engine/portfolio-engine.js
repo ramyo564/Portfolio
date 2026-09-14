@@ -549,7 +549,7 @@ export function renderHero(heroConfig, modalControls = null, config = null) {
             heroDiagWrap.innerHTML = `
                 <figure class="evidence-figure hero-architecture-figure" style="margin: 0; cursor: pointer;">
                     <div class="evidence-img-container evidence-mermaid-wrap" style="min-height: 380px;">
-                        <span class="evidence-tag-badge is-arch">SYSTEM ARCHITECTURE MASTER OVERVIEW</span>
+                        <span class="evidence-tag-badge is-arch">SYSTEM ARCHITECTURE OVERVIEW</span>
                         <div class="mermaid" data-mermaid-id="${heroConfig.diagramId}">${diagramCode}</div>
                     </div>
                     <figcaption class="evidence-caption" style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
@@ -561,7 +561,7 @@ export function renderHero(heroConfig, modalControls = null, config = null) {
             heroDiagWrap.querySelector('figure')?.addEventListener('click', () => {
                 const svgEl = heroDiagWrap.querySelector('.mermaid svg');
                 if (svgEl) {
-                    modalControls?.openSvgModal(svgEl.outerHTML, heroConfig.diagramTitle || '시스템 전체 아키텍처 마스터 다이어그램');
+                    modalControls?.openSvgModal(svgEl.outerHTML, heroConfig.diagramTitle || '시스템 전체 아키텍처 다이어그램');
                 }
             });
         }

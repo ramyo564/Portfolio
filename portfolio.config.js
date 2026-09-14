@@ -1,25 +1,25 @@
 import { diagrams } from './diagrams.js';
 
 /**
- * Master Portfolio Hub Configuration (DTO)
+ * Portfolio Hub Configuration (DTO)
  * Awwwards-Standard Swiss Minimalist Specification
  */
 export const portfolioConfig = {
-    brand: 'YOHAN · BACKEND ARCHITECT',
+    brand: 'YOHAN · BACKEND SYSTEMS ENGINEER',
     navLinks: [
         { label: 'Engineering Projects', href: '#cases' },
         { label: 'GitHub ↗', href: 'https://github.com/ramyo564', target: '_blank' },
         { label: 'Resume / Contact', href: 'mailto:yohan032yohan@gmail.com' }
     ],
     hero: {
-        kicker: 'Master Engineering Architecture & Verification Hub',
+        kicker: 'Backend Systems Engineering & Verification Hub',
         headline: 'MEASURABLE BACKEND ENGINEERING.<br>CONCURRENCY OPTIMIZATION.<br>DISTRIBUTED CLOUD ARCHITECTURE.',
         description: '대규모 트래픽 부하 최적화, 비동기 파이프라인 설계, 도메인 주도 헥사고날 아키텍처 및 클라우드 인프라 안정성을 기계적 실측 증거(k6, 프로파일링)와 다이어그램으로 입증하는 통합 엔지니어링 허브입니다.',
         killerMetrics: [
-            { number: '0.00%', label: 'Failed Rate', desc: '1,000 VU 피크 부하 무손실 완결' },
+            { number: '0.00%', label: 'Failed Rate', desc: '1,000 VU 피크 부하 실측 완결 (@k6)' },
+            { number: '67.6% Cut', label: 'E2E Latency', desc: 'Overmind V2 에이전트 405s → 131s' },
             { number: '15x Cut', label: 'Write Latency', desc: 'RabbitMQ 비동기 쓰기 p95 126ms' },
-            { number: '80% Cut', label: 'Deploy & Cloud Cost', desc: 'Docker 멀티스테이지 및 인프라 최적화' },
-            { number: '100% Sync', label: 'Bid Integrity', desc: 'Django Channels 동시 입찰 정합성' }
+            { number: '80% Cut', label: 'Deploy & Cloud Cost', desc: 'Docker 멀티스테이지 및 인프라 최적화' }
         ]
     },
     sectionIntro: {
@@ -30,14 +30,37 @@ export const portfolioConfig = {
     cases: [
         {
             number: '01',
+            category: 'AI MULTI-AGENT & HARNESS GOVERNANCE',
+            period: '2026.01 – PRESENT',
+            shortTitle: 'Overmind V2 (LangGraph & 하네스)',
+            highlightMetric: 'E2E 지연 67.6%↓ (405s → 131s)',
+            title: 'Overmind V2: LangGraph 유한 상태 머신(FSM) 제어 & Python AST 품질 하네스',
+            summary: '단편적인 프롬프트 수정을 지양하고, 3-Layer 클린 하네스와 Pydantic AI 타입 검증, 3-Tier 온톨로지 멱등 복원 및 100+ 커스텀 AST 정적 린터로 비결정론적 LLM의 비용 폭주와 지연을 엄격히 통제했습니다.',
+            metrics: [
+                { label: 'E2E LATENCY', value: '405.0s → 131.0s (-67.6% 단축)', highlight: true },
+                { label: 'ONTOLOGY DR', value: 'Git SSOT 멱등 복원 (Vector DB 콜드스타트 복구율 검증)' },
+                { label: 'CODE SEARCH', value: '392.0s → 13.8s (-96.5% 단축, 0 토큰 탐색)' }
+            ],
+            evidence: [
+                {
+                    tag: 'ARCHITECTURE',
+                    title: 'Overmind V2 멀티에이전트 오케스트레이션 및 3-Tier 메모리 아키텍처',
+                    mermaidId: 'overmind-v2-architecture'
+                }
+            ],
+            detailLink: 'https://equinox-rambutan-c3e.notion.site/3c62b6d94f8881c4bf01f210507fcb4d',
+            detailLinkLabel: '상세 기술 사양서 검증 (Notion) ↗'
+        },
+        {
+            number: '02',
             category: 'HIGH-CONCURRENCY & AI PIPELINE',
             period: '2025.09 – PRESENT',
             shortTitle: 'Life Navigation (대용량 트래픽 & AI)',
             highlightMetric: '0.00% Error (Write p95 126ms)',
             title: 'Life Navigation: 1,000 VU 부하 최적화 및 분산 AI 파이프라인',
-            summary: 'Spring Boot 헥사고날 아키텍처 기반의 RabbitMQ 비동기 쓰기 분리, JPA 영속성 튜닝 및 FastAPI AI 세션 복구 파이프라인으로 1,000 VU 고부하 환경에서 무손실 0.00% 에러율을 달성했습니다.',
+            summary: 'Spring Boot 헥사고날 아키텍처 기반의 RabbitMQ 비동기 쓰기 분리, JPA 영속성 튜닝 및 FastAPI AI 세션 복구 파이프라인으로 1,000 VU 고부하 환경에서 0.00% 에러율을 실측했습니다.',
             metrics: [
-                { label: 'FAILED RATE', value: '1.2% → 0.00% (72.5만 건 무손실)', highlight: true },
+                { label: 'FAILED RATE', value: '1.2% → 0.00% (k6 72.5만 건 요청)', highlight: true },
                 { label: 'WRITE p95', value: '3.4s → 126ms (-96% 단축)' },
                 { label: 'THROUGHPUT', value: 'Read 3.68k / Write 916 RPS' }
             ],
@@ -52,7 +75,7 @@ export const portfolioConfig = {
             detailLinkLabel: '실측 검증 포트폴리오 보기 ↗'
         },
         {
-            number: '02',
+            number: '03',
             category: 'REALTIME & DEVOPS AUTOMATION',
             period: '2024.04 – 2024.08',
             shortTitle: 'Hoops (실시간 매칭 & CI/CD)',
@@ -75,7 +98,7 @@ export const portfolioConfig = {
             detailLinkLabel: '문제 해결 포트폴리오 보기 ↗'
         },
         {
-            number: '03',
+            number: '04',
             category: 'COMMERCE & CLOUD MIGRATION',
             period: '2023.05 – 2023.06',
             shortTitle: 'Django Commerce (세션 병합 & AWS)',
@@ -98,7 +121,7 @@ export const portfolioConfig = {
             detailLinkLabel: '문제 해결 포트폴리오 보기 ↗'
         },
         {
-            number: '04',
+            number: '05',
             category: 'REALTIME & ASYNC PIPELINE',
             period: '2023.11 – 2024.01',
             shortTitle: 'Realtime Auction (동시 입찰 & Celery)',

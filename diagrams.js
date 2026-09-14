@@ -1,10 +1,14 @@
 export const diagrams = {
     'portfolio-hub-map': `
         graph TD
-        Hub[Portfolio Hub] --> LN[Life Navigation]
+        Hub[Portfolio Hub] --> OM[Overmind V2]
+        Hub --> LN[Life Navigation]
         Hub --> Hoops[Hoops]
         Hub --> RA[Realtime Auction]
         Hub --> UD[Django Commerce]
+
+        OM --> OMA[Architecture Spec]
+        OM --> OMR[Harness & Benchmark]
 
         LN --> LNA[Architecture Page]
         LN --> LNC[Problem Solving Page]
@@ -21,9 +25,9 @@ export const diagrams = {
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
         classDef g fill:#161b22,stroke:#238636,color:#c9d1d9
         classDef o fill:#161b22,stroke:#d29922,color:#c9d1d9
-        class Hub,LN,Hoops,RA,UD b
-        class LNA,HA,RAA,UDA g
-        class LNC,HC,RAC,UDC o
+        class Hub,OM,LN,Hoops,RA,UD b
+        class OMA,LNA,HA,RAA,UDA g
+        class OMR,LNC,HC,RAC,UDC o
     `,
 
     'comparison-axis-map': `
@@ -63,14 +67,40 @@ export const diagrams = {
         T2024A --> Hoops[Hoops]
         Hoops --> T2024B[2024 H2]
         T2024B --> RA[Realtime Auction]
-        RA --> T2025[2025 H3]
+        RA --> T2025[2025]
         T2025 --> LN[Life Navigation]
+        LN --> T2026[2026]
+        T2026 --> OM[Overmind V2]
 
         classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
         classDef g fill:#161b22,stroke:#238636,color:#c9d1d9
         classDef o fill:#161b22,stroke:#d29922,color:#c9d1d9
-        class T2023,T2024A,T2024B,T2025 b
-        class UD,Hoops,RA,LN g
+        class T2023,T2024A,T2024B,T2025,T2026 b
+        class UD,Hoops,RA,LN,OM g
+    `,
+
+    'overmind-v2-architecture': `
+        graph LR
+        Client[Discord / Web Client] --> Router[Unified Intent Router]
+        Router --> Master[LangGraph Master Orchestrator]
+
+        Master --> Workflows[Specialized Workflows]
+        Workflows --> Factory[OCP AgentFactory]
+        Factory --> LLMs[GenAI / Groq / Gemma-4]
+
+        Workflows --> L1[L1 Redis / In-Memory]
+        Workflows --> L2[(L2 Qdrant Vector)]
+        Workflows --> L3[(L3 Git SSOT)]
+
+        Workflows -.-> Observe[Langfuse OTel Tracing]
+        Workflows -.-> Linter[100+ AST Static Linters]
+
+        classDef b fill:#161b22,stroke:#58a6ff,color:#c9d1d9
+        classDef g fill:#161b22,stroke:#238636,color:#c9d1d9
+        classDef o fill:#161b22,stroke:#d29922,color:#c9d1d9
+        class Client,Router,Master,Workflows,Factory b
+        class L1,L2,L3 g
+        class LLMs,Observe,Linter o
     `,
 
     'ln-project-architecture': `
